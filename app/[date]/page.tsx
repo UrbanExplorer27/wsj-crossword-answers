@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps) {
     }
   }
 
-  const dateStr = new Date(answers.date).toLocaleDateString('en-US', { 
+  const dateStr = new Date(answers.date + 'T00:00:00').toLocaleDateString('en-US', { 
     weekday: 'long', 
     year: 'numeric', 
     month: 'long', 
@@ -60,7 +60,7 @@ export default async function DatePage({ params }: PageProps) {
             WSJ Crossword Answers
           </h1>
           <p className="text-lg text-gray-600">
-            {new Date(answers.date).toLocaleDateString('en-US', { 
+            {new Date(answers.date + 'T00:00:00').toLocaleDateString('en-US', { 
               weekday: 'long', 
               year: 'numeric', 
               month: 'long', 
@@ -195,7 +195,7 @@ export default async function DatePage({ params }: PageProps) {
           WSJ Crossword {answers.date} Answers ({answers.date})
         </h2>
         <p className="text-gray-700 mb-4">
-          Complete solutions for the Wall Street Journal crossword puzzle from {new Date(answers.date).toLocaleDateString('en-US', { 
+          Complete solutions for the Wall Street Journal crossword puzzle from {new Date(answers.date + 'T00:00:00').toLocaleDateString('en-US', { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
