@@ -7,7 +7,7 @@ const OpenAI = require('openai');
 require('dotenv').config({ path: '.env.local' });
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const WSJ_CROSSWORD_URL = process.env.WSJ_CROSSWORD_URL || 'https://www.wsj.com/puzzles/crossword';
+const WSJ_PUZZLES_URL = process.env.WSJ_PUZZLES_URL || 'https://www.wsj.com/news/puzzle?gaa_at=eafs&gaa_n=ASWzDAigbgREeawx-fWIpGXzkXT4vpgpOgI2lsKQLeb79mVGtSQzPzlFywj2zza9w1k%3D&gaa_ts=68cf9fba&gaa_sig=wqPxu5zsWOioaXkDkt4NlQgz3etXUrY4nsfVSCFW6rBheucoK7FyZVHisJ9x1GKJO5yn-bnZfUnGhFl7pEqGfg%3D%3D';
 
 if (!OPENAI_API_KEY) {
   console.error('❌ OPENAI_API_KEY not found in environment variables');
@@ -29,20 +29,64 @@ async function takeScreenshot() {
   try {
     const context = await browser.newContext({
       viewport: { width: 1920, height: 1080 },
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      extraHTTPHeaders: {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'DNT': '1',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Cache-Control': 'max-age=0'
+      }
     });
     
     const page = await context.newPage();
     
-    console.log('📱 Navigating to WSJ crossword...');
-    await page.goto(WSJ_CROSSWORD_URL, { 
+    console.log('📱 Navigating to WSJ puzzles page...');
+    await page.goto(WSJ_PUZZLES_URL, { 
       waitUntil: 'networkidle',
       timeout: 30000 
+    });
+    
+    // Wait for puzzles to load
+    console.log('⏳ Waiting for puzzles to load...');
+    await page.waitForTimeout(5000);
+    
+    // Find the first crossword link (today's crossword)
+    console.log('🔍 Looking for today\'s crossword...');
+    const crosswordLink = await page.locator('a[href*="crossword"]').first();
+    
+    if (await crosswordLink.count() === 0) {
+      throw new Error('No crossword link found on puzzles page');
+    }
+    
+    const crosswordUrl = await crosswordLink.getAttribute('href');
+    console.log(`📋 Found crossword: ${crosswordUrl}`);
+    
+    // Navigate to the crossword page
+    console.log('📱 Navigating to crossword page...');
+    await page.goto(crosswordUrl, { 
+      waitUntil: 'domcontentloaded',
+      timeout: 60000 
     });
     
     // Wait for crossword to load
     console.log('⏳ Waiting for crossword to load...');
     await page.waitForTimeout(5000);
+    
+    // Debug: Check what we can see on the page
+    const pageTitle = await page.title();
+    console.log(`📄 Page title: ${pageTitle}`);
+    
+    // Check if there's a paywall or login requirement
+    const paywallText = await page.locator('text=Subscribe, text=Sign In, text=Log In, text=Subscribe to continue').first();
+    if (await paywallText.count() > 0) {
+      console.log('🔒 Paywall detected - subscription required');
+    }
     
     // Try to find and click "Show Answers" or similar button
     try {
@@ -86,7 +130,20 @@ async function extractAnswersWithOpenAI(imagePath) {
     const base64Image = imageBuffer.toString('base64');
     
     const prompt = process.env.CUSTOM_PROMPT || `
-    Analyze this WSJ crossword puzzle screenshot and extract all the answers.
+    You are a crossword puzzle expert. Analyze this WSJ (Wall Street Journal) crossword puzzle screenshot and extract ALL visible answers with their clues.
+    
+    IMPORTANT: Look carefully for:
+    1. Clue numbers and letters (like "1A", "2D", "3A", etc.) - these are usually in small text
+    2. The actual answer words filled in the crossword grid
+    3. Any clue text that's visible in the interface
+    
+    The WSJ crossword typically has:
+    - Across clues (A) and Down clues (D)
+    - Numbers like 1, 2, 3, etc. next to clues
+    - Answer words in the grid squares
+    - Clue text in a sidebar or below the grid
+    
+    Extract EVERYTHING you can see, even if partially visible. Be thorough!
     
     Return a JSON array with this exact format:
     [
@@ -99,11 +156,13 @@ async function extractAnswersWithOpenAI(imagePath) {
     ]
     
     Rules:
-    - Only include answers that are clearly visible
+    - Look for BOTH across (A) and down (D) clues
+    - Extract as many as possible, even if confidence is low
+    - If you see any text that looks like clues or answers, include it
     - Use the exact clue text as shown
     - Position should be in format like "1A", "2D", etc.
     - Confidence should be 0.0-1.0 based on clarity
-    - Return empty array if no answers are visible
+    - Return empty array ONLY if you see absolutely no crossword content
     `;
     
     const response = await openai.chat.completions.create({
