@@ -130,7 +130,7 @@ export default async function HomePage() {
           <div className="flex items-center justify-between">
             <div>
               <div className="text-3xl font-bold text-gray-600">
-                {new Date(answers.scrapedAt).toLocaleTimeString()}
+                {new Date(answers.uploaded_at || answers.scrapedAt).toLocaleTimeString()}
               </div>
               <div className="text-sm text-gray-600 font-medium">Last Updated</div>
             </div>

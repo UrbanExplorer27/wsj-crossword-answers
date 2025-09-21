@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: PageProps) {
       title: `WSJ Crossword ${answers.date} Answers (${answers.date})`,
       description: `Complete answers for the WSJ crossword from ${dateStr}`,
       type: 'article',
-      publishedTime: answers.scrapedAt,
+      publishedTime: answers.uploaded_at || answers.scrapedAt,
       url: `https://wsj-crossword-answers.vercel.app/${answers.date}`,
     },
   }
@@ -130,7 +130,7 @@ export default async function DatePage({ params }: PageProps) {
           <div className="flex items-center justify-between">
             <div>
               <div className="text-3xl font-bold text-gray-600">
-                {new Date(answers.scrapedAt).toLocaleTimeString()}
+                {new Date(answers.uploaded_at || answers.scrapedAt).toLocaleTimeString()}
               </div>
               <div className="text-sm text-gray-600 font-medium">Last Updated</div>
             </div>
