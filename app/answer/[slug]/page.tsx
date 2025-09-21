@@ -89,8 +89,6 @@ export default function AnswerPage({ params }: AnswerPageProps) {
     notFound();
   }
 
-  const confidenceColor = answer.confidence > 0.8 ? 'text-green-600' : 
-                         answer.confidence > 0.6 ? 'text-yellow-600' : 'text-red-600';
 
   return (
     <div className="max-w-4xl mx-auto p-8">
@@ -113,9 +111,6 @@ export default function AnswerPage({ params }: AnswerPageProps) {
             </div>
             <div className="text-6xl font-bold text-blue-700 mb-4">
               {answer.answer}
-            </div>
-            <div className={`text-sm font-medium ${confidenceColor}`}>
-              Confidence: {Math.round(answer.confidence * 100)}%
             </div>
           </div>
         </div>

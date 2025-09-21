@@ -91,21 +91,6 @@ export default async function HomePage() {
         <div className="stat-card">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-3xl font-bold text-green-600">
-                {answers.answers.filter(a => a.confidence > 0.8).length}
-              </div>
-              <div className="text-sm text-gray-600 font-medium">High Confidence</div>
-            </div>
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="flex items-center justify-between">
-            <div>
               <div className="text-3xl font-bold text-gray-600">
                 {new Date(answers.scrapedAt).toLocaleTimeString()}
               </div>
@@ -140,12 +125,6 @@ export default async function HomePage() {
               >
                 <div className="flex justify-between items-start mb-2">
                   <span className="position-badge">{answer.position}</span>
-                  <span className={`text-xs font-medium ${
-                    answer.confidence > 0.8 ? 'confidence-high' :
-                    answer.confidence > 0.5 ? 'confidence-medium' : 'confidence-low'
-                  }`}>
-                    {Math.round(answer.confidence * 100)}% confidence
-                  </span>
                 </div>
                 <div className="clue-text mb-2">{answer.clue}</div>
                 <div className="answer-text">{answer.answer}</div>
@@ -199,8 +178,7 @@ export default async function HomePage() {
           extracts answers from the WSJ crossword and presents them in an easy-to-browse format.
         </p>
         <p className="text-gray-700 mb-4">
-          This page contains {answers.totalAnswers} crossword answers with their corresponding clues. 
-          Each answer includes a confidence score based on our AI analysis of the puzzle.
+          This page contains {answers.totalAnswers} crossword answers with their corresponding clues.
         </p>
       </div>
     </div>

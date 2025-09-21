@@ -122,21 +122,6 @@ export default async function DatePage({ params }: PageProps) {
         <div className="stat-card">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-3xl font-bold text-green-600">
-                {answers.answers.filter(a => a.confidence > 0.8).length}
-              </div>
-              <div className="text-sm text-gray-600 font-medium">High Confidence</div>
-            </div>
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="flex items-center justify-between">
-            <div>
               <div className="text-3xl font-bold text-gray-600">
                 {new Date(answers.scrapedAt).toLocaleTimeString()}
               </div>
@@ -171,12 +156,6 @@ export default async function DatePage({ params }: PageProps) {
               >
                 <div className="flex justify-between items-start mb-2">
                   <span className="position-badge">{answer.position}</span>
-                  <span className={`text-xs font-medium ${
-                    answer.confidence > 0.8 ? 'confidence-high' :
-                    answer.confidence > 0.5 ? 'confidence-medium' : 'confidence-low'
-                  }`}>
-                    {Math.round(answer.confidence * 100)}% confidence
-                  </span>
                 </div>
                 <div className="clue-text mb-2">{answer.clue}</div>
                 <div className="answer-text">{answer.answer}</div>
@@ -203,9 +182,7 @@ export default async function DatePage({ params }: PageProps) {
           })}. This page contains all {answers.totalAnswers} crossword answers with their corresponding clues.
         </p>
         <p className="text-gray-700 mb-4">
-          Each answer includes a confidence score based on our AI analysis. High confidence answers (80%+) 
-          are typically accurate, while lower confidence answers may need verification. Click on any answer 
-          to view its dedicated page with detailed explanations and SEO optimization.
+          Click on any answer to view its dedicated page with detailed explanations and SEO optimization.
         </p>
         <p className="text-gray-700 mb-4">
           <strong>Individual Answer Pages:</strong> Each crossword clue has its own optimized page targeting 

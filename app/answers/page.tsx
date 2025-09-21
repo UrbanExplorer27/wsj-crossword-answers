@@ -63,8 +63,6 @@ export default function AnswersPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {allAnswers.map((answer, index) => {
           const slug = generateSlug(answer.clue);
-          const confidenceColor = answer.confidence > 0.8 ? 'text-green-600' : 
-                                 answer.confidence > 0.6 ? 'text-yellow-600' : 'text-red-600';
           
           return (
             <a
@@ -81,9 +79,6 @@ export default function AnswersPage() {
                 </div>
                 <div className="flex items-center justify-between text-sm text-gray-500">
                   <span>{answer.position}</span>
-                  <span className={confidenceColor}>
-                    {Math.round(answer.confidence * 100)}% confidence
-                  </span>
                 </div>
               </div>
               
