@@ -11,6 +11,9 @@ export async function generateMetadata() {
     return {
       title: 'WSJ Crossword Answers - Daily Solutions & Clues',
       description: 'Get instant access to Wall Street Journal crossword answers, clues, and solutions. Updated daily with the latest WSJ crossword puzzles.',
+      alternates: {
+        canonical: `https://wsj-crossword-answers.vercel.app/`,
+      },
     }
   }
 
@@ -25,11 +28,15 @@ export async function generateMetadata() {
     title: `WSJ Crossword Answers ${answers.date} - Daily Solutions & Clues`,
     description: `Complete answers and solutions for the Wall Street Journal crossword puzzle from ${dateStr}. ${answers.total_answers || answers.answers.length} answers included with individual answer pages.`,
     keywords: `WSJ crossword ${answers.date} answers, Wall Street Journal crossword, ${dateStr}, crossword solutions, crossword clues, daily crossword`,
+    alternates: {
+      canonical: `https://wsj-crossword-answers.vercel.app/`,
+    },
     openGraph: {
       title: `WSJ Crossword Answers ${answers.date} - Daily Solutions & Clues`,
       description: `Complete answers for the WSJ crossword from ${dateStr}`,
       type: 'article',
       publishedTime: answers.uploaded_at || answers.scrapedAt,
+      url: `https://wsj-crossword-answers.vercel.app/`,
     },
   }
 }
