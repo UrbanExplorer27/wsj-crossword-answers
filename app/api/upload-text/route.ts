@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Send text to OpenAI for crossword extraction
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-5",
       messages: [
         {
           role: "user",

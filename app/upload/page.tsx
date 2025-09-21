@@ -7,7 +7,7 @@ export default function UploadPage() {
   const [text, setText] = useState('');
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const [uploadType, setUploadType] = useState<'pdf' | 'text'>('pdf');
+  const [uploadType, setUploadType] = useState<'pdf' | 'text' | 'image'>('image');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -22,7 +22,7 @@ export default function UploadPage() {
   };
 
   const handleUpload = async () => {
-    if (uploadType === 'pdf' && !file) return;
+    if ((uploadType === 'pdf' || uploadType === 'image') && !file) return;
     if (uploadType === 'text' && !text.trim()) return;
 
     setUploading(true);
@@ -35,6 +35,13 @@ export default function UploadPage() {
         const formData = new FormData();
         formData.append('file', file!);
         response = await fetch('/api/upload-crossword', {
+          method: 'POST',
+          body: formData,
+        });
+      } else if (uploadType === 'image') {
+        const formData = new FormData();
+        formData.append('file', file!);
+        response = await fetch('/api/upload-image', {
           method: 'POST',
           body: formData,
         });
@@ -72,33 +79,58 @@ export default function UploadPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Upload Crossword</h1>
-          <p className="text-gray-600">Upload a PDF or paste text to get answers instantly</p>
+          <p className="text-gray-600">Upload an image, PDF, or paste text to get answers instantly</p>
         </div>
 
         <div className="space-y-6">
           {/* Upload Type Toggle */}
-          <div className="flex justify-center space-x-4 mb-6">
+          <div className="flex justify-center space-x-2 mb-6">
+            <button
+              onClick={() => setUploadType('image')}
+              className={`px-3 py-2 rounded-lg font-medium transition-colors text-sm ${
+                uploadType === 'image'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              Image
+            </button>
             <button
               onClick={() => setUploadType('pdf')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-3 py-2 rounded-lg font-medium transition-colors text-sm ${
                 uploadType === 'pdf'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              PDF Upload
+              PDF
             </button>
             <button
               onClick={() => setUploadType('text')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-3 py-2 rounded-lg font-medium transition-colors text-sm ${
                 uploadType === 'text'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              Text Paste
+              Text
             </button>
           </div>
+
+          {/* Image Upload */}
+          {uploadType === 'image' && (
+            <div className="text-center">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              {file && (
+                <p className="mt-2 text-sm text-green-600">✓ {file.name}</p>
+              )}
+            </div>
+          )}
 
           {/* PDF Upload */}
           {uploadType === 'pdf' && (
@@ -134,7 +166,7 @@ export default function UploadPage() {
           <div className="text-center">
             <button
               onClick={handleUpload}
-              disabled={(uploadType === 'pdf' && !file) || (uploadType === 'text' && !text.trim()) || uploading}
+              disabled={((uploadType === 'pdf' || uploadType === 'image') && !file) || (uploadType === 'text' && !text.trim()) || uploading}
               className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {uploading ? 'Processing...' : 'Get Answers'}

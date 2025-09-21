@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import OpenAI from 'openai';
-import { fromPath } from 'pdf2pic';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -16,45 +15,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
   }
 
-  if (file.type !== 'application/pdf') {
-    return NextResponse.json({ error: 'File must be a PDF' }, { status: 400 });
+  // Check if it's an image
+  if (!file.type.startsWith('image/')) {
+    return NextResponse.json({ error: 'File must be an image' }, { status: 400 });
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const today = new Date().toISOString().split('T')[0];
-  const filename = `crossword-${today}.pdf`;
+  const filename = `crossword-${today}.${file.type.split('/')[1]}`;
   const uploadDir = join(process.cwd(), 'public', 'uploads');
   await mkdir(uploadDir, { recursive: true });
   const filepath = join(uploadDir, filename);
 
   // Save file
   await writeFile(filepath, buffer);
-  console.log(`📁 PDF saved: ${filepath}`);
+  console.log(`📁 Image saved: ${filepath}`);
 
   try {
-    // Convert PDF to images
-    console.log('🖼️ Converting PDF to images...');
-    const convert = fromPath(filepath, {
-      density: 300,
-      saveFilename: `crossword-${today}`,
-      savePath: join(process.cwd(), 'public', 'uploads'),
-      format: 'png',
-      width: 2000,
-      height: 2000
-    });
-
-    const results = await convert.bulk(-1, { responseType: 'base64' });
-    console.log(`📸 Converted ${results.length} pages to images`);
-
+    // Convert to base64
+    const base64Image = buffer.toString('base64');
+    
     // Send to GPT-5 Vision
     console.log('🤖 Processing with GPT-5 Vision...');
-    const imageContents = results.map((result) => ({
-      type: "image_url" as const,
-      image_url: {
-        url: `data:image/png;base64,${result.base64}`
-      }
-    }));
-
     const response = await openai.chat.completions.create({
       model: "gpt-5",
       messages: [
@@ -73,7 +55,12 @@ export async function POST(request: NextRequest) {
   }
 ]`
             },
-            ...imageContents
+            {
+              type: "image_url",
+              image_url: {
+                url: `data:${file.type};base64,${base64Image}`
+              }
+            }
           ]
         }
       ],
@@ -98,7 +85,7 @@ export async function POST(request: NextRequest) {
       const answersData = {
         date: today,
         answers: answers,
-        source: 'gpt5_vision',
+        source: 'gpt5_vision_image',
         uploaded_at: new Date().toISOString(),
         total_answers: answers.length,
         high_confidence: answers.filter((a: any) => a.confidence > 0.8).length
@@ -126,13 +113,13 @@ export async function POST(request: NextRequest) {
       answers: answers,
       total: answers.length,
       date: today,
-      method: 'gpt5_vision'
+      method: 'gpt5_vision_image'
     });
 
   } catch (error) {
-    console.error('PDF processing error:', error);
+    console.error('Image processing error:', error);
     return NextResponse.json({ 
-      error: 'Failed to process PDF. Please try again.' 
+      error: 'Failed to process image. Please try again.' 
     }, { status: 500 });
   }
 }
