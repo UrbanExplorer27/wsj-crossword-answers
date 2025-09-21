@@ -1,0 +1,50 @@
+name: Daily WSJ Crossword Scrape
+
+on:
+  schedule:
+    # Run daily at 6 AM EST (11 AM UTC)
+    - cron: '0 11 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm install
+        npx playwright install chromium
+        
+    - name: Run scraper
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        WSJ_CROSSWORD_URL: ${{ secrets.WSJ_CROSSWORD_URL || 'https://www.wsj.com/puzzles/crossword' }}
+      run: |
+        npm run scrape
+        
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add data/ public/screenshots/
+        git diff --staged --quiet || git commit -m "Daily crossword scrape - $(date +'%Y-%m-%d')"
+        git push
+        
+    - name: Deploy to Vercel (if using Vercel)
+      if: success()
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        working-directory: ./
