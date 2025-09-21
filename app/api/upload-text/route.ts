@@ -61,7 +61,7 @@ Here's the text to analyze:
 ${text}`
         }
       ],
-      max_tokens: 2000,
+          max_completion_tokens: 2000,
     });
 
     const content = response.choices[0]?.message?.content;
@@ -94,7 +94,7 @@ ${text}`
       const dataPath = join(process.cwd(), 'data', 'answers.json');
       const fs = require('fs');
 
-      let allAnswers = {};
+      let allAnswers: Record<string, any> = {};
       try {
         const existingData = fs.readFileSync(dataPath, 'utf8');
         allAnswers = JSON.parse(existingData);

@@ -90,7 +90,7 @@ This is a solved puzzle, so you should be able to see both clues and answers cle
           ]
         }
       ],
-      max_tokens: 2000,
+      max_completion_tokens: 2000,
     });
 
     const content = response.choices[0]?.message?.content;
@@ -122,7 +122,7 @@ This is a solved puzzle, so you should be able to see both clues and answers cle
     };
 
     const dataPath = join(process.cwd(), 'data', 'answers.json');
-    let allAnswers = {};
+    let allAnswers: Record<string, any> = {};
     try {
       const existingData = fs.readFileSync(dataPath, 'utf8');
       allAnswers = JSON.parse(existingData);

@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
           ]
         }
       ],
-      max_tokens: 2000,
+          max_completion_tokens: 2000,
     });
 
     const content = response.choices[0]?.message?.content;
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
       const dataPath = join(process.cwd(), 'data', 'answers.json');
       const fs = require('fs');
 
-      let allAnswers = {};
+      let allAnswers: Record<string, any> = {};
       try {
         const existingData = fs.readFileSync(dataPath, 'utf8');
         allAnswers = JSON.parse(existingData);

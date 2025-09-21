@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     };
 
     const dataPath = join(process.cwd(), 'data', 'answers.json');
-    let allAnswers = {};
+    let allAnswers: Record<string, any> = {};
     try {
       const existingData = fs.readFileSync(dataPath, 'utf8');
       allAnswers = JSON.parse(existingData);
