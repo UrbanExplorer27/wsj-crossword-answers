@@ -10,6 +10,7 @@
     "test-scraper": "node scripts/test-scraper.js"
   },
   "dependencies": {
+    "dotenv": "^17.2.2",
     "next": "^14.0.0",
     "openai": "^4.20.0",
     "playwright": "^1.40.0",
