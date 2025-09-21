@@ -7,7 +7,7 @@ export default function UploadPage() {
   const [text, setText] = useState('');
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<any>(null);
-  const [uploadType, setUploadType] = useState<'pdf' | 'text' | 'image'>('image');
+  const [uploadType, setUploadType] = useState<'pdf' | 'text' | 'image' | 'answers'>('image');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -23,7 +23,7 @@ export default function UploadPage() {
 
   const handleUpload = async () => {
     if ((uploadType === 'pdf' || uploadType === 'image') && !file) return;
-    if (uploadType === 'text' && !text.trim()) return;
+    if ((uploadType === 'text' || uploadType === 'answers') && !text.trim()) return;
 
     setUploading(true);
     setResult(null);
@@ -45,8 +45,16 @@ export default function UploadPage() {
           method: 'POST',
           body: formData,
         });
-      } else {
+      } else if (uploadType === 'text') {
         response = await fetch('/api/upload-text', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text }),
+        });
+      } else { // uploadType === 'answers'
+        response = await fetch('/api/upload-answers', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -79,7 +87,7 @@ export default function UploadPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Upload Crossword</h1>
-          <p className="text-gray-600">Upload an image, PDF, or paste text to get answers instantly</p>
+          <p className="text-gray-600">Upload an image, PDF, paste text, or manually enter answers</p>
         </div>
 
         <div className="space-y-6">
@@ -114,6 +122,16 @@ export default function UploadPage() {
               }`}
             >
               Text
+            </button>
+            <button
+              onClick={() => setUploadType('answers')}
+              className={`px-3 py-2 rounded-lg font-medium transition-colors text-sm ${
+                uploadType === 'answers'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              Answers
             </button>
           </div>
 
@@ -162,11 +180,36 @@ export default function UploadPage() {
             </div>
           )}
 
+          {/* Answers Upload */}
+          {uploadType === 'answers' && (
+            <div>
+              <textarea
+                value={text}
+                onChange={handleTextChange}
+                placeholder="Paste your answers here in this format:
+1A: FASTEN
+2D: LOTION
+3A: CAMDEN
+4D: MEASLY
+...
+
+Or any format with clue numbers and answers"
+                className="w-full h-40 p-4 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+              <p className="mt-2 text-sm text-gray-500 text-center">
+                {text.length} characters
+              </p>
+              <p className="mt-1 text-xs text-gray-400 text-center">
+                Format: Position: Answer (e.g., 1A: FASTEN)
+              </p>
+            </div>
+          )}
+
           {/* Upload Button */}
           <div className="text-center">
             <button
               onClick={handleUpload}
-              disabled={((uploadType === 'pdf' || uploadType === 'image') && !file) || (uploadType === 'text' && !text.trim()) || uploading}
+              disabled={((uploadType === 'pdf' || uploadType === 'image') && !file) || ((uploadType === 'text' || uploadType === 'answers') && !text.trim()) || uploading}
               className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {uploading ? 'Processing...' : 'Get Answers'}
