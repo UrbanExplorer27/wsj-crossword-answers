@@ -3,6 +3,37 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 
+export async function generateMetadata() {
+  const today = new Date().toISOString().split('T')[0]
+  const answers = await getTodayAnswers(today)
+  
+  if (!answers) {
+    return {
+      title: 'WSJ Crossword Answers - Daily Solutions & Clues',
+      description: 'Get instant access to Wall Street Journal crossword answers, clues, and solutions. Updated daily with the latest WSJ crossword puzzles.',
+    }
+  }
+
+  const dateStr = new Date(answers.date + 'T00:00:00').toLocaleDateString('en-US', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  })
+
+  return {
+    title: `WSJ Crossword Answers ${answers.date} - Daily Solutions & Clues`,
+    description: `Complete answers and solutions for the Wall Street Journal crossword puzzle from ${dateStr}. ${answers.total_answers || answers.answers.length} answers included with individual answer pages.`,
+    keywords: `WSJ crossword ${answers.date} answers, Wall Street Journal crossword, ${dateStr}, crossword solutions, crossword clues, daily crossword`,
+    openGraph: {
+      title: `WSJ Crossword Answers ${answers.date} - Daily Solutions & Clues`,
+      description: `Complete answers for the WSJ crossword from ${dateStr}`,
+      type: 'article',
+      publishedTime: answers.uploaded_at || answers.scrapedAt,
+    },
+  }
+}
+
 export default async function HomePage() {
   const today = new Date().toISOString().split('T')[0]
   const answers = await getTodayAnswers(today)
