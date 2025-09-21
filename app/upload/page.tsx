@@ -264,7 +264,7 @@ Or any format with clue numbers and answers"
               disabled={((uploadType === 'pdf' || uploadType === 'image' || uploadType === 'solved') && !file) || ((uploadType === 'text' || uploadType === 'answers') && !text.trim()) || uploading}
               className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {uploading ? 'Processing...' : 'Get Answers'}
+              {uploading ? 'Processing...' : uploadType === 'answers' ? 'Upload Answers' : 'Get Answers'}
             </button>
           </div>
 
