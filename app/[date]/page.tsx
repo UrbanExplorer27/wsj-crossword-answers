@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   return {
     title: `WSJ Crossword ${answers.date} Answers (${answers.date})`,
-    description: `Complete answers and solutions for the Wall Street Journal crossword puzzle from ${dateStr}. ${answers.totalAnswers} answers included with individual answer pages.`,
+    description: `Complete answers and solutions for the Wall Street Journal crossword puzzle from ${dateStr}. ${answers.total_answers || answers.answers.length} answers included with individual answer pages.`,
     keywords: `WSJ crossword ${answers.date} answers, Wall Street Journal crossword ${answers.date}, ${dateStr}, crossword solutions, crossword clues, ${answers.date}`,
     openGraph: {
       title: `WSJ Crossword ${answers.date} Answers (${answers.date})`,
@@ -109,7 +109,7 @@ export default async function DatePage({ params }: PageProps) {
         <div className="stat-card">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-3xl font-bold text-blue-600">{answers.totalAnswers}</div>
+              <div className="text-3xl font-bold text-blue-600">{answers.total_answers || answers.answers.length}</div>
               <div className="text-sm text-gray-600 font-medium">Total Answers</div>
             </div>
             <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -179,7 +179,7 @@ export default async function DatePage({ params }: PageProps) {
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
-          })}. This page contains all {answers.totalAnswers} crossword answers with their corresponding clues.
+          })}. This page contains all {answers.total_answers || answers.answers.length} crossword answers with their corresponding clues.
         </p>
         <p className="text-gray-700 mb-4">
           Click on any answer to view its dedicated page with detailed explanations and SEO optimization.

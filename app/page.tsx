@@ -78,7 +78,7 @@ export default async function HomePage() {
         <div className="stat-card">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-3xl font-bold text-blue-600">{answers.totalAnswers}</div>
+              <div className="text-3xl font-bold text-blue-600">{answers.total_answers || answers.answers.length}</div>
               <div className="text-sm text-gray-600 font-medium">Total Answers</div>
             </div>
             <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -178,7 +178,7 @@ export default async function HomePage() {
           extracts answers from the WSJ crossword and presents them in an easy-to-browse format.
         </p>
         <p className="text-gray-700 mb-4">
-          This page contains {answers.totalAnswers} crossword answers with their corresponding clues.
+          This page contains {answers.total_answers || answers.answers.length} crossword answers with their corresponding clues.
         </p>
       </div>
     </div>
