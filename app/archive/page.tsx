@@ -21,9 +21,9 @@ export default async function ArchivePage() {
   
   // Group dates by year and month
   const groupedDates = allDates.reduce((acc, date) => {
-    const year = new Date(date).getFullYear()
-    const month = new Date(date).getMonth()
-    const monthName = new Date(date).toLocaleDateString('en-US', { month: 'long' })
+    const year = new Date(date + 'T00:00:00').getFullYear()
+    const month = new Date(date + 'T00:00:00').getMonth()
+    const monthName = new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'long' })
     
     if (!acc[year]) {
       acc[year] = {}
@@ -70,7 +70,7 @@ export default async function ArchivePage() {
                             href={`/${date}`}
                             className="block text-sm text-blue-600 hover:text-blue-800 hover:underline"
                           >
-                            {new Date(date).toLocaleDateString('en-US', { 
+                            {new Date(date + 'T00:00:00').toLocaleDateString('en-US', { 
                               weekday: 'short',
                               month: 'short', 
                               day: 'numeric' 
