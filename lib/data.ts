@@ -80,3 +80,15 @@ export async function searchAnswers(query: string): Promise<Answer[]> {
     return []
   }
 }
+
+// Synchronous version for static generation
+export function readAnswersData(): Record<string, AnswerData> {
+  try {
+    const fs = require('fs')
+    const data = fs.readFileSync(DATA_FILE, 'utf8')
+    return JSON.parse(data)
+  } catch (error) {
+    console.error('Error reading answers data:', error)
+    return {}
+  }
+}

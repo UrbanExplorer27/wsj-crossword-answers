@@ -27,11 +27,11 @@ export async function generateMetadata({ params }: PageProps) {
   })
 
   return {
-    title: `WSJ Crossword Answers - ${dateStr}`,
-    description: `Complete answers and solutions for the Wall Street Journal crossword puzzle from ${dateStr}. ${answers.totalAnswers} answers included.`,
-    keywords: `WSJ crossword answers, Wall Street Journal crossword, ${dateStr}, crossword solutions, crossword clues`,
+    title: `WSJ Crossword ${answers.date} Answers (${answers.date})`,
+    description: `Complete answers and solutions for the Wall Street Journal crossword puzzle from ${dateStr}. ${answers.totalAnswers} answers included with individual answer pages.`,
+    keywords: `WSJ crossword ${answers.date} answers, Wall Street Journal crossword ${answers.date}, ${dateStr}, crossword solutions, crossword clues, ${answers.date}`,
     openGraph: {
-      title: `WSJ Crossword Answers - ${dateStr}`,
+      title: `WSJ Crossword ${answers.date} Answers (${answers.date})`,
       description: `Complete answers for the WSJ crossword from ${dateStr}`,
       type: 'article',
       publishedTime: answers.scrapedAt,
@@ -156,33 +156,43 @@ export default async function DatePage({ params }: PageProps) {
       <div className="mb-8">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">All Answers</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {answers.answers.map((answer, index) => (
-            <div key={index} className="answer-card">
-              <div className="flex justify-between items-start mb-2">
-                <span className="position-badge">{answer.position}</span>
-                <span className={`text-xs font-medium ${
-                  answer.confidence > 0.8 ? 'confidence-high' :
-                  answer.confidence > 0.5 ? 'confidence-medium' : 'confidence-low'
-                }`}>
-                  {Math.round(answer.confidence * 100)}% confidence
-                </span>
-              </div>
-              <div className="clue-text mb-2">{answer.clue}</div>
-              <div className="answer-text">{answer.answer}</div>
-            </div>
-          ))}
+          {answers.answers.map((answer, index) => {
+            const slug = answer.clue
+              .toLowerCase()
+              .replace(/[^a-z0-9\s]/g, '')
+              .replace(/\s+/g, '-')
+              .trim();
+            
+            return (
+              <a
+                key={index}
+                href={`/answer/${slug}`}
+                className="answer-card hover:shadow-lg hover:border-blue-200 transition-all"
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <span className="position-badge">{answer.position}</span>
+                  <span className={`text-xs font-medium ${
+                    answer.confidence > 0.8 ? 'confidence-high' :
+                    answer.confidence > 0.5 ? 'confidence-medium' : 'confidence-low'
+                  }`}>
+                    {Math.round(answer.confidence * 100)}% confidence
+                  </span>
+                </div>
+                <div className="clue-text mb-2">{answer.clue}</div>
+                <div className="answer-text">{answer.answer}</div>
+                <div className="text-xs text-blue-600 mt-2 font-medium">
+                  View full answer page →
+                </div>
+              </a>
+            );
+          })}
         </div>
       </div>
 
       {/* SEO Content */}
       <div className="mt-12 prose max-w-none">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          WSJ Crossword Answers for {new Date(answers.date).toLocaleDateString('en-US', { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          })}
+          WSJ Crossword {answers.date} Answers ({answers.date})
         </h2>
         <p className="text-gray-700 mb-4">
           Complete solutions for the Wall Street Journal crossword puzzle from {new Date(answers.date).toLocaleDateString('en-US', { 
@@ -194,7 +204,12 @@ export default async function DatePage({ params }: PageProps) {
         </p>
         <p className="text-gray-700 mb-4">
           Each answer includes a confidence score based on our AI analysis. High confidence answers (80%+) 
-          are typically accurate, while lower confidence answers may need verification.
+          are typically accurate, while lower confidence answers may need verification. Click on any answer 
+          to view its dedicated page with detailed explanations and SEO optimization.
+        </p>
+        <p className="text-gray-700 mb-4">
+          <strong>Individual Answer Pages:</strong> Each crossword clue has its own optimized page targeting 
+          specific search terms like "{answers.answers[0]?.clue} crossword answer" for maximum SEO visibility.
         </p>
       </div>
     </div>
