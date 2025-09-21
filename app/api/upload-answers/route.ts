@@ -3,7 +3,7 @@ import { join } from 'path';
 import fs from 'fs';
 
 export async function POST(request: NextRequest) {
-  const { text } = await request.json();
+  const { text, date } = await request.json();
   
   console.log('📝 Received text:', JSON.stringify(text));
   console.log('📝 Text length:', text?.length);
@@ -23,9 +23,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No valid answers found. Please use format: Position: Answer (e.g., 1A: FASTEN)' }, { status: 400 });
     }
 
-    const today = new Date().toISOString().split('T')[0];
+    const selectedDate = date || new Date().toISOString().split('T')[0];
     const answersData = {
-      date: today,
+      date: selectedDate,
       answers: answers,
       source: 'manual_answers_upload',
       uploaded_at: new Date().toISOString(),
@@ -42,17 +42,17 @@ export async function POST(request: NextRequest) {
       console.log('No existing answers.json found or file is empty, starting fresh.');
     }
     
-    allAnswers[today] = answersData;
+    allAnswers[selectedDate] = answersData;
     fs.writeFileSync(dataPath, JSON.stringify(allAnswers, null, 2));
     
-    console.log(`💾 Manual answers saved for ${today}`);
+    console.log(`💾 Manual answers saved for ${selectedDate}`);
     console.log(`📄 Generated ${answers.length} individual answer pages`);
 
     return NextResponse.json({
       success: true,
       answers: answers,
       total: answers.length,
-      date: today,
+      date: selectedDate,
       method: 'manual_answers'
     });
 

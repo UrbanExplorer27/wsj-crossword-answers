@@ -11,6 +11,7 @@ const openai = new OpenAI({
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const file = formData.get('file') as File | null;
+  const date = formData.get('date') as string | null;
 
   if (!file) {
     return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
@@ -22,8 +23,8 @@ export async function POST(request: NextRequest) {
 
   const buffer = Buffer.from(await file.arrayBuffer());
   const base64Image = buffer.toString('base64');
-  const today = new Date().toISOString().split('T')[0];
-  const filename = `solved-crossword-${today}-${Date.now()}.${file.type.split('/')[1]}`;
+  const selectedDate = date || new Date().toISOString().split('T')[0];
+  const filename = `solved-crossword-${selectedDate}-${Date.now()}.${file.type.split('/')[1]}`;
   const uploadDir = join(process.cwd(), 'public', 'uploads');
   await mkdir(uploadDir, { recursive: true });
   const filepath = join(uploadDir, filename);
@@ -113,7 +114,7 @@ This is a solved puzzle, so you should be able to see both clues and answers cle
 
   if (answers.length > 0) {
     const answersData = {
-      date: today,
+      date: selectedDate,
       answers: answers,
       source: 'solved_crossword_vision',
       uploaded_at: new Date().toISOString(),
@@ -130,10 +131,10 @@ This is a solved puzzle, so you should be able to see both clues and answers cle
       console.log('No existing answers.json found or file is empty, starting fresh.');
     }
     
-    allAnswers[today] = answersData;
+    allAnswers[selectedDate] = answersData;
     fs.writeFileSync(dataPath, JSON.stringify(allAnswers, null, 2));
     
-    console.log(`💾 Solved crossword answers saved for ${today}`);
+    console.log(`💾 Solved crossword answers saved for ${selectedDate}`);
     console.log(`📄 Generated ${answers.length} individual answer pages`);
   }
 
@@ -141,7 +142,7 @@ This is a solved puzzle, so you should be able to see both clues and answers cle
     success: true,
     answers: answers,
     total: answers.length,
-    date: today,
+    date: selectedDate,
     filename: filename,
     method: method
   });

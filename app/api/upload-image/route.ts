@@ -10,6 +10,7 @@ const openai = new OpenAI({
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const file = formData.get('file') as File | null;
+  const date = formData.get('date') as string | null;
 
   if (!file) {
     return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
@@ -21,8 +22,8 @@ export async function POST(request: NextRequest) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const today = new Date().toISOString().split('T')[0];
-  const filename = `crossword-${today}.${file.type.split('/')[1]}`;
+  const selectedDate = date || new Date().toISOString().split('T')[0];
+  const filename = `crossword-${selectedDate}.${file.type.split('/')[1]}`;
   const uploadDir = join(process.cwd(), 'public', 'uploads');
   await mkdir(uploadDir, { recursive: true });
   const filepath = join(uploadDir, filename);
@@ -83,7 +84,7 @@ export async function POST(request: NextRequest) {
     // Save answers
     if (answers.length > 0) {
       const answersData = {
-        date: today,
+        date: selectedDate,
         answers: answers,
         source: 'gpt5_vision_image',
         uploaded_at: new Date().toISOString(),
@@ -102,10 +103,10 @@ export async function POST(request: NextRequest) {
         console.log('No existing answers.json found, starting fresh.');
       }
       
-      allAnswers[today] = answersData;
+      allAnswers[selectedDate] = answersData;
       fs.writeFileSync(dataPath, JSON.stringify(allAnswers, null, 2));
       
-      console.log(`💾 Answers saved for ${today}`);
+      console.log(`💾 Answers saved for ${selectedDate}`);
       console.log(`📄 Generated ${answers.length} individual answer pages`);
     }
 
@@ -113,7 +114,7 @@ export async function POST(request: NextRequest) {
       success: true,
       answers: answers,
       total: answers.length,
-      date: today,
+      date: selectedDate,
       method: 'gpt5_vision_image'
     });
 

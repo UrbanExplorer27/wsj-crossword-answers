@@ -9,7 +9,7 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
-    const { text } = await request.json();
+    const { text, date } = await request.json();
 
     if (!text || !text.trim()) {
       return NextResponse.json({ error: 'No text provided' }, { status: 400 });
@@ -80,9 +80,9 @@ ${text}`
 
     // Save answers to data file
     if (answers.length > 0) {
-      const today = new Date().toISOString().split('T')[0];
+      const selectedDate = date || new Date().toISOString().split('T')[0];
       const answersData = {
-        date: today,
+        date: selectedDate,
         answers: answers,
         source: 'text_upload',
         uploaded_at: new Date().toISOString(),
@@ -102,10 +102,10 @@ ${text}`
         console.log('No existing answers.json found or file is empty, starting fresh.');
       }
       
-      allAnswers[today] = answersData;
+      allAnswers[selectedDate] = answersData;
       fs.writeFileSync(dataPath, JSON.stringify(allAnswers, null, 2));
       
-      console.log(`💾 Answers saved for ${today}`);
+      console.log(`💾 Answers saved for ${selectedDate}`);
       console.log(`📄 Generated ${answers.length} individual answer pages`);
     }
 
@@ -113,7 +113,7 @@ ${text}`
       success: true,
       answers: answers,
       total: answers.length,
-      date: new Date().toISOString().split('T')[0],
+      date: selectedDate,
       method: 'text_upload'
     });
 

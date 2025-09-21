@@ -8,6 +8,10 @@ export default function UploadPage() {
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [uploadType, setUploadType] = useState<'pdf' | 'text' | 'image' | 'answers' | 'solved'>('image');
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().split('T')[0]; // YYYY-MM-DD format
+  });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -39,6 +43,7 @@ export default function UploadPage() {
       if (uploadType === 'pdf') {
         const formData = new FormData();
         formData.append('file', file!);
+        formData.append('date', selectedDate);
         response = await fetch('/api/upload-crossword', {
           method: 'POST',
           body: formData,
@@ -46,6 +51,7 @@ export default function UploadPage() {
       } else if (uploadType === 'image') {
         const formData = new FormData();
         formData.append('file', file!);
+        formData.append('date', selectedDate);
         response = await fetch('/api/upload-image', {
           method: 'POST',
           body: formData,
@@ -53,6 +59,7 @@ export default function UploadPage() {
       } else if (uploadType === 'solved') {
         const formData = new FormData();
         formData.append('file', file!);
+        formData.append('date', selectedDate);
         response = await fetch('/api/upload-solved', {
           method: 'POST',
           body: formData,
@@ -63,7 +70,7 @@ export default function UploadPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ text }),
+          body: JSON.stringify({ text, date: selectedDate }),
         });
       } else { // uploadType === 'answers'
         response = await fetch('/api/upload-answers', {
@@ -71,7 +78,7 @@ export default function UploadPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ text }),
+          body: JSON.stringify({ text, date: selectedDate }),
         });
       }
 
@@ -159,6 +166,20 @@ export default function UploadPage() {
             >
               Solved
             </button>
+          </div>
+
+          {/* Date Picker */}
+          <div className="flex items-center justify-center space-x-4">
+            <label htmlFor="date-picker" className="text-sm font-medium text-gray-700">
+              Select Date:
+            </label>
+            <input
+              id="date-picker"
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
           </div>
 
           {/* Image Upload */}
