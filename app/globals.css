@@ -182,6 +182,14 @@ input[type="file"]::-webkit-file-upload-button:hover {
 .disabled\:opacity-50:disabled { opacity: 0.5; }
 .disabled\:cursor-not-allowed:disabled { cursor: not-allowed; }
 
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* Positioning */
 .relative { position: relative; }
 .absolute { position: absolute; }

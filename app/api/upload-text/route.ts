@@ -106,6 +106,7 @@ ${text}`
       fs.writeFileSync(dataPath, JSON.stringify(allAnswers, null, 2));
       
       console.log(`💾 Answers saved for ${today}`);
+      console.log(`📄 Generated ${answers.length} individual answer pages`);
     }
 
     return NextResponse.json({

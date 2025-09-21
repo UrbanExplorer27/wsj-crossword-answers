@@ -125,21 +125,36 @@ export default async function HomePage() {
       <div className="mb-8">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">All Answers</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {answers.answers.map((answer, index) => (
-            <div key={index} className="answer-card">
-              <div className="flex justify-between items-start mb-2">
-                <span className="position-badge">{answer.position}</span>
-                <span className={`text-xs font-medium ${
-                  answer.confidence > 0.8 ? 'confidence-high' :
-                  answer.confidence > 0.5 ? 'confidence-medium' : 'confidence-low'
-                }`}>
-                  {Math.round(answer.confidence * 100)}% confidence
-                </span>
-              </div>
-              <div className="clue-text mb-2">{answer.clue}</div>
-              <div className="answer-text">{answer.answer}</div>
-            </div>
-          ))}
+          {answers.answers.map((answer, index) => {
+            const slug = answer.clue
+              .toLowerCase()
+              .replace(/[^a-z0-9\s]/g, '')
+              .replace(/\s+/g, '-')
+              .trim();
+            
+            return (
+              <a
+                key={index}
+                href={`/answer/${slug}`}
+                className="answer-card hover:shadow-lg hover:border-blue-200 transition-all"
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <span className="position-badge">{answer.position}</span>
+                  <span className={`text-xs font-medium ${
+                    answer.confidence > 0.8 ? 'confidence-high' :
+                    answer.confidence > 0.5 ? 'confidence-medium' : 'confidence-low'
+                  }`}>
+                    {Math.round(answer.confidence * 100)}% confidence
+                  </span>
+                </div>
+                <div className="clue-text mb-2">{answer.clue}</div>
+                <div className="answer-text">{answer.answer}</div>
+                <div className="text-xs text-blue-600 mt-2 font-medium">
+                  View full answer page →
+                </div>
+              </a>
+            );
+          })}
         </div>
       </div>
 
