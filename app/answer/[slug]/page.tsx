@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: AnswerPageProps): Promise<Met
   }
 
   const title = `${answer.clue} Crossword Answer | WSJ`;
-  const description = `Find the answer to "${answer.clue}" from the WSJ crossword puzzle. Answer: ${answer.answer} (${answer.position}). Complete crossword solution and more answers.`;
+  const description = `Find the answer to "${answer.clue}" from the WSJ crossword puzzle. Complete crossword solution and more answers.`;
 
   return {
     title,
