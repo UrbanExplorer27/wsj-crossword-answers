@@ -4,6 +4,10 @@ import fs from 'fs';
 
 export async function POST(request: NextRequest) {
   const { text } = await request.json();
+  
+  console.log('📝 Received text:', JSON.stringify(text));
+  console.log('📝 Text length:', text?.length);
+  console.log('📝 Text trimmed length:', text?.trim()?.length);
 
   if (!text || text.trim() === '') {
     return NextResponse.json({ error: 'No answers provided' }, { status: 400 });
@@ -63,7 +67,28 @@ function parseManualAnswers(text: string): any[] {
   const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
   
   for (const line of lines) {
-    // Try different formats
+    // Skip empty lines and section headers
+    if (!line || line === 'Across' || line === 'Down' || line.startsWith('•') === false) {
+      continue;
+    }
+    
+    // Handle bullet point format: • Clue text (1A): ANSWER
+    const bulletMatch = line.match(/•\s*(.+?)\s*\((\d+[AD])\):\s*(.+)$/i);
+    if (bulletMatch) {
+      const clue = bulletMatch[1].trim();
+      const position = bulletMatch[2].trim();
+      const answer = bulletMatch[3].trim();
+      
+      answers.push({
+        clue: clue,
+        answer: answer.toUpperCase(),
+        position: position.toUpperCase(),
+        confidence: 1.0
+      });
+      continue;
+    }
+    
+    // Try other formats as fallback
     const patterns = [
       // Format: 1A: FASTEN
       /^(\d+[AD]):\s*(.+)$/i,

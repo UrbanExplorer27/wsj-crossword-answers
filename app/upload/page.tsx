@@ -25,6 +25,11 @@ export default function UploadPage() {
     if ((uploadType === 'pdf' || uploadType === 'image' || uploadType === 'solved') && !file) return;
     if ((uploadType === 'text' || uploadType === 'answers') && !text.trim()) return;
 
+    console.log('🚀 Upload type:', uploadType);
+    console.log('🚀 Text content:', JSON.stringify(text));
+    console.log('🚀 Text length:', text.length);
+    console.log('🚀 Text trimmed:', text.trim().length);
+
     setUploading(true);
     setResult(null);
 
@@ -71,10 +76,13 @@ export default function UploadPage() {
       }
 
       if (!response.ok) {
-        throw new Error('Upload failed');
+        const errorData = await response.json();
+        console.error('❌ Upload failed:', response.status, errorData);
+        throw new Error(`Upload failed: ${errorData.error || 'Unknown error'}`);
       }
 
       const data = await response.json();
+      console.log('✅ Upload successful:', data);
       setResult(data);
       
       if (data.success) {
@@ -83,7 +91,8 @@ export default function UploadPage() {
         }, 1500);
       }
     } catch (error) {
-      setResult({ error: 'Upload failed. Please try again.' });
+      console.error('❌ Upload error:', error);
+      setResult({ error: error instanceof Error ? error.message : 'Upload failed. Please try again.' });
     } finally {
       setUploading(false);
     }
