@@ -5,20 +5,21 @@ import Image from 'next/image'
 import Breadcrumbs from '@/app/components/Breadcrumbs'
 
 interface PageProps {
-  params: {
+  params: Promise<{
     date: string
-  }
+  }>
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const answers = await getTodayAnswers(params.date)
+  const { date } = await params
+  const answers = await getTodayAnswers(date)
   
   if (!answers) {
     return {
       title: 'WSJ Crossword Answers Not Found',
       description: 'The requested WSJ crossword answers are not available.',
       alternates: {
-        canonical: `https://crosswordwiki.com/${params.date}`,
+        canonical: `https://crosswordwiki.com/${date}`,
       },
     }
   }
@@ -35,27 +36,28 @@ export async function generateMetadata({ params }: PageProps) {
     description: `Complete answers and solutions for the Wall Street Journal crossword puzzle from ${dateStr}. ${answers.total_answers || answers.answers.length} answers included with individual answer pages.`,
     keywords: `WSJ crossword ${answers.date} answers, Wall Street Journal crossword ${answers.date}, ${dateStr}, crossword solutions, crossword clues, ${answers.date}`,
     alternates: {
-      canonical: `https://crosswordwiki.com/${answers.date}`,
+      canonical: `https://crosswordwiki.com/${date}`,
     },
     openGraph: {
       title: `WSJ Crossword ${answers.date} Answers (${answers.date})`,
       description: `Complete answers for the WSJ crossword from ${dateStr}`,
       type: 'article',
       publishedTime: answers.uploaded_at || answers.scrapedAt,
-      url: `https://crosswordwiki.com/${answers.date}`,
+      url: `https://crosswordwiki.com/${date}`,
     },
   }
 }
 
 export default async function DatePage({ params }: PageProps) {
-  const answers = await getTodayAnswers(params.date)
+  const { date } = await params
+  const answers = await getTodayAnswers(date)
   const allDates = await getAllDates()
   
   if (!answers) {
     notFound()
   }
 
-  const currentIndex = allDates.indexOf(params.date)
+  const currentIndex = allDates.indexOf(date)
   const prevDate = allDates[currentIndex + 1] || null
   const nextDate = allDates[currentIndex - 1] || null
 

@@ -5,9 +5,9 @@ import StructuredData from '@/app/components/StructuredData';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
 
 interface AnswerPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // Generate static params for all answer pages
@@ -31,17 +31,18 @@ export async function generateStaticParams() {
 
 // Generate metadata for each answer page
 export async function generateMetadata({ params }: AnswerPageProps): Promise<Metadata> {
+  const { slug } = await params
   const answersData = readAnswersData();
   let foundAnswer: any = null;
 
   Object.entries(answersData).forEach(([date, dayData]: [string, any]) => {
     dayData.answers.forEach((answer: any) => {
-      const slug = answer.clue
+      const answerSlug = answer.clue
         .toLowerCase()
         .replace(/[^a-z0-9\s]/g, '')
         .replace(/\s+/g, '-')
         .trim();
-      if (slug === params.slug) {
+      if (answerSlug === slug) {
         foundAnswer = answer;
       }
     });
@@ -51,7 +52,7 @@ export async function generateMetadata({ params }: AnswerPageProps): Promise<Met
     return {
       title: 'Answer Not Found',
       alternates: {
-        canonical: `https://crosswordwiki.com/answer/${params.slug}`,
+        canonical: `https://crosswordwiki.com/answer/${slug}`,
       },
     };
   }
@@ -72,13 +73,13 @@ export async function generateMetadata({ params }: AnswerPageProps): Promise<Met
       'puzzle answer'
     ],
     alternates: {
-      canonical: `https://crosswordwiki.com/answer/${params.slug}`,
+      canonical: `https://crosswordwiki.com/answer/${slug}`,
     },
     openGraph: {
       title,
       description,
       type: 'article',
-      url: `https://crosswordwiki.com/answer/${params.slug}`,
+      url: `https://crosswordwiki.com/answer/${slug}`,
     },
     twitter: {
       card: 'summary',
@@ -103,19 +104,20 @@ function findAnswerBySlug(answersData: any, slug: string) {
   return null;
 }
 
-export default function AnswerPage({ params }: AnswerPageProps) {
+export default async function AnswerPage({ params }: AnswerPageProps) {
+  const { slug } = await params
   const answersData = readAnswersData();
   let foundAnswer: any = null;
   let foundDate: string | null = null;
 
   Object.entries(answersData).forEach(([date, dayData]: [string, any]) => {
     dayData.answers.forEach((answer: any) => {
-      const slug = answer.clue
+      const answerSlug = answer.clue
         .toLowerCase()
         .replace(/[^a-z0-9\s]/g, '')
         .replace(/\s+/g, '-')
         .trim();
-      if (slug === params.slug) {
+      if (answerSlug === slug) {
         foundAnswer = answer;
         foundDate = date;
       }
@@ -133,7 +135,7 @@ export default function AnswerPage({ params }: AnswerPageProps) {
         type="answer" 
         data={{
           ...foundAnswer,
-          slug: params.slug,
+          slug: slug,
           date: foundDate
         }} 
       />
@@ -142,7 +144,7 @@ export default function AnswerPage({ params }: AnswerPageProps) {
         <Breadcrumbs items={[
           { label: 'Home', href: '/' },
           { label: 'All Answers', href: '/answers' },
-          { label: foundAnswer.clue, href: `/answer/${params.slug}` }
+          { label: foundAnswer.clue, href: `/answer/${slug}` }
         ]} />
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
         {/* Header */}
