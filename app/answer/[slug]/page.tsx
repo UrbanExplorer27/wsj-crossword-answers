@@ -57,7 +57,8 @@ export async function generateMetadata({ params }: AnswerPageProps): Promise<Met
     };
   }
 
-  const title = `${foundAnswer.clue} answer`;
+  const cleanClue = foundAnswer.clue.replace(/^Answer for /, '');
+  const title = `${cleanClue} answer`;
   const description = `Find the answer to "${foundAnswer.clue}" from the WSJ crossword puzzle. Complete crossword solution and more answers.`;
 
   return {
@@ -150,7 +151,7 @@ export default async function AnswerPage({ params }: AnswerPageProps) {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {foundAnswer.clue} answer
+            {foundAnswer.clue.replace(/^Answer for /, '')} answer
           </h1>
           <p className="text-lg text-gray-600">
             Wall Street Journal Crossword Puzzle Solution
