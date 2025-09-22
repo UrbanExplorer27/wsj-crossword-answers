@@ -44,40 +44,46 @@ export async function POST(request: NextRequest) {
       high_confidence: answers.filter((a: any) => a.confidence > 0.8).length
     };
 
-    // Try file system first (development)
-    try {
-      const dataPath = join(process.cwd(), 'data', 'answers.json');
-      let allAnswers: Record<string, any> = {};
+    // In production, use memory store directly
+    if (process.env.NODE_ENV === 'production') {
+      addAnswerData(selectedDate, answersData);
+      console.log(`💾 Manual answers saved to memory store for ${selectedDate}`);
+    } else {
+      // Try file system first (development)
       try {
-        const existingData = fs.readFileSync(dataPath, 'utf8');
-        allAnswers = JSON.parse(existingData);
-      } catch (error) {
-        console.log('No existing answers.json found or file is empty, starting fresh.');
-      }
-      
-      allAnswers[selectedDate] = answersData;
-      fs.writeFileSync(dataPath, JSON.stringify(allAnswers, null, 2));
-      console.log(`💾 Manual answers saved to file system for ${selectedDate}`);
-    } catch (error) {
-      // Try public data file (production fallback)
-      try {
-        const publicDataPath = join(process.cwd(), 'public', 'data', 'answers.json');
+        const dataPath = join(process.cwd(), 'data', 'answers.json');
         let allAnswers: Record<string, any> = {};
         try {
-          const existingData = fs.readFileSync(publicDataPath, 'utf8');
+          const existingData = fs.readFileSync(dataPath, 'utf8');
           allAnswers = JSON.parse(existingData);
         } catch (error) {
-          console.log('No existing public answers.json found, starting fresh.');
+          console.log('No existing answers.json found or file is empty, starting fresh.');
         }
         
         allAnswers[selectedDate] = answersData;
-        fs.writeFileSync(publicDataPath, JSON.stringify(allAnswers, null, 2));
-        console.log(`💾 Manual answers saved to public data file for ${selectedDate}`);
-      } catch (publicError) {
-        // Final fallback to memory store
-        console.log('File system not available, using memory store');
-        addAnswerData(selectedDate, answersData);
-        console.log(`💾 Manual answers saved to memory store for ${selectedDate}`);
+        fs.writeFileSync(dataPath, JSON.stringify(allAnswers, null, 2));
+        console.log(`💾 Manual answers saved to file system for ${selectedDate}`);
+      } catch (error) {
+        // Try public data file (production fallback)
+        try {
+          const publicDataPath = join(process.cwd(), 'public', 'data', 'answers.json');
+          let allAnswers: Record<string, any> = {};
+          try {
+            const existingData = fs.readFileSync(publicDataPath, 'utf8');
+            allAnswers = JSON.parse(existingData);
+          } catch (error) {
+            console.log('No existing public answers.json found, starting fresh.');
+          }
+          
+          allAnswers[selectedDate] = answersData;
+          fs.writeFileSync(publicDataPath, JSON.stringify(allAnswers, null, 2));
+          console.log(`💾 Manual answers saved to public data file for ${selectedDate}`);
+        } catch (publicError) {
+          // Final fallback to memory store
+          console.log('File system not available, using memory store');
+          addAnswerData(selectedDate, answersData);
+          console.log(`💾 Manual answers saved to memory store for ${selectedDate}`);
+        }
       }
     }
     

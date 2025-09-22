@@ -47,3 +47,5 @@ export function getAllAnswers(): any[] {
   });
   return allAnswers;
 }
+
+

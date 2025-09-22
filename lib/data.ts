@@ -31,6 +31,14 @@ const DATA_FILE = path.join(process.cwd(), 'data', 'answers.json')
 const PUBLIC_DATA_FILE = path.join(process.cwd(), 'public', 'data', 'answers.json')
 
 export async function getTodayAnswers(date: string): Promise<AnswerData | null> {
+  // In production, try memory store first
+  if (process.env.NODE_ENV === 'production') {
+    const memoryData = getAnswerDataByDate(date)
+    if (memoryData) {
+      return memoryData
+    }
+  }
+  
   try {
     // Try file system first (development)
     const data = await fs.readFile(DATA_FILE, 'utf8')
@@ -61,6 +69,14 @@ export async function getTodayAnswers(date: string): Promise<AnswerData | null> 
 }
 
 export async function getAllDates(): Promise<string[]> {
+  // In production, try memory store first
+  if (process.env.NODE_ENV === 'production') {
+    const memoryDates = getMemoryDates()
+    if (memoryDates.length > 0) {
+      return memoryDates
+    }
+  }
+  
   try {
     // Try file system first (development)
     const data = await fs.readFile(DATA_FILE, 'utf8')
@@ -83,6 +99,14 @@ export async function getAllDates(): Promise<string[]> {
 }
 
 export async function getAllAnswers(): Promise<Record<string, AnswerData>> {
+  // In production, try memory store first
+  if (process.env.NODE_ENV === 'production') {
+    const memoryData = getAnswersData()
+    if (Object.keys(memoryData).length > 0) {
+      return memoryData
+    }
+  }
+  
   try {
     // Try file system first (development)
     const data = await fs.readFile(DATA_FILE, 'utf8')

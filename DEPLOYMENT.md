@@ -77,3 +77,5 @@ The `netlify.toml` file is already configured with:
 - Check DNS configuration
 - Verify SSL certificate
 - Test both www and non-www versions
+
+
