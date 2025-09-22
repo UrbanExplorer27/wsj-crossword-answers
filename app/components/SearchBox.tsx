@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { readAnswersData } from '@/lib/data';
 
 interface SearchResult {
   clue: string;
@@ -15,6 +14,7 @@ export default function SearchBox() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (query.length < 2) {
@@ -23,35 +23,26 @@ export default function SearchBox() {
       return;
     }
 
-    // Search through all answers
-    const allAnswers: SearchResult[] = [];
-    const answersData = readAnswersData();
-    
-    Object.values(answersData).forEach((dayData: any) => {
-      dayData.answers.forEach((answer: any) => {
-        const slug = answer.clue
-          .toLowerCase()
-          .replace(/[^a-z0-9\s]/g, '')
-          .replace(/\s+/g, '-')
-          .trim();
-        
-        allAnswers.push({
-          ...answer,
-          date: dayData.date,
-          slug
-        });
-      });
-    });
+    // Debounce search
+    const timeoutId = setTimeout(async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        if (response.ok) {
+          const data = await response.json();
+          setResults(data.results || []);
+          setIsOpen((data.results || []).length > 0);
+        }
+      } catch (error) {
+        console.error('Search error:', error);
+        setResults([]);
+        setIsOpen(false);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300);
 
-    // Filter results
-    const filtered = allAnswers.filter(answer => 
-      answer.clue.toLowerCase().includes(query.toLowerCase()) ||
-      answer.answer.toLowerCase().includes(query.toLowerCase()) ||
-      answer.position.toLowerCase().includes(query.toLowerCase())
-    ).slice(0, 5); // Limit to 5 results
-
-    setResults(filtered);
-    setIsOpen(filtered.length > 0);
+    return () => clearTimeout(timeoutId);
   }, [query]);
 
   const handleResultClick = (slug: string) => {
@@ -81,29 +72,40 @@ export default function SearchBox() {
       </div>
 
       {/* Search Results Dropdown */}
-      {isOpen && results.length > 0 && (
+      {isOpen && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-          {results.map((result, index) => (
-            <button
-              key={index}
-              onClick={() => handleResultClick(result.slug)}
-              className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
-            >
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <div className="font-medium text-gray-900 line-clamp-1">
-                    {result.clue}
+          {isLoading ? (
+            <div className="px-4 py-3 text-center text-gray-500">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mx-auto mb-2"></div>
+              Searching...
+            </div>
+          ) : results.length > 0 ? (
+            results.map((result, index) => (
+              <button
+                key={index}
+                onClick={() => handleResultClick(result.slug)}
+                className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="font-medium text-gray-900 line-clamp-1">
+                      {result.clue}
+                    </div>
+                    <div className="text-sm text-blue-600 font-semibold">
+                      {result.answer}
+                    </div>
                   </div>
-                  <div className="text-sm text-blue-600 font-semibold">
-                    {result.answer}
+                  <div className="ml-4 text-xs text-gray-500">
+                    {result.position}
                   </div>
                 </div>
-                <div className="ml-4 text-xs text-gray-500">
-                  {result.position}
-                </div>
-              </div>
-            </button>
-          ))}
+              </button>
+            ))
+          ) : (
+            <div className="px-4 py-3 text-center text-gray-500">
+              No results found
+            </div>
+          )}
         </div>
       )}
     </div>
