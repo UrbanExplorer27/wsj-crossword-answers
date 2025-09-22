@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readAnswersData } from '@/lib/data';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = request.nextUrl;
     const query = searchParams.get('q');
 
     if (!query || query.length < 2) {

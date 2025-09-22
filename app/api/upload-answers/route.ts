@@ -4,6 +4,9 @@ import fs from 'fs';
 import { requireUploadAuth } from '@/lib/auth';
 import { addAnswerData, getAnswersData } from '@/lib/memory-store';
 
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   // Check authentication
   const authError = requireUploadAuth(request);
