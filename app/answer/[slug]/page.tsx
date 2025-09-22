@@ -173,11 +173,11 @@ export default async function AnswerPage({ params }: AnswerPageProps) {
         {/* SEO Content */}
         <div className="prose max-w-none">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Answer to "{foundAnswer.clue}"
+            Answer to "{foundAnswer.clue.replace(/^Answer for /, '')}"
           </h2>
           
           <p className="text-lg text-gray-700 mb-6">
-            The answer to the crossword clue <strong>"{foundAnswer.clue}"</strong> is <strong>"{foundAnswer.answer}"</strong>. 
+            The answer to the crossword clue <strong>"{foundAnswer.clue.replace(/^Answer for /, '')}"</strong> is <strong>"{foundAnswer.answer}"</strong>. 
             This clue appeared in position {foundAnswer.position} of the Wall Street Journal crossword puzzle.
           </p>
 
