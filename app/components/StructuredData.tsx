@@ -10,7 +10,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
     structuredData = {
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": `${data.clue} Answer`,
+      "headline": `${data.clue} answer`,
       "description": `Find the answer to "${data.clue}" from the WSJ crossword puzzle. Answer: ${data.answer} (${data.position}).`,
       "url": `https://crosswordwiki.com/answer/${data.slug}`,
       "datePublished": data.date,
