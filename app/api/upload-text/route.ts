@@ -2,12 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
+import { requireUploadAuth } from '@/lib/auth';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
 export async function POST(request: NextRequest) {
+  // Check authentication
+  const authError = requireUploadAuth(request);
+  if (authError) {
+    return NextResponse.json({ error: authError.error }, { status: authError.status });
+  }
+
   try {
     const { text, date } = await request.json();
 

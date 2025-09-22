@@ -1,11 +1,11 @@
 User-agent: *
 Allow: /
 
-# Disallow admin/upload pages
+# Disallow admin/upload pages (password protected)
 Disallow: /upload
 Disallow: /api/
 
-# Allow all answer pages
+# Allow all public pages
 Allow: /answer/
 Allow: /answers
 Allow: /archive

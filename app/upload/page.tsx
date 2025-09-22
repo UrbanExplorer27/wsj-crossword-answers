@@ -1,8 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function UploadPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [isChecking, setIsChecking] = useState(true);
   const [file, setFile] = useState<File | null>(null);
   const [text, setText] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -12,6 +16,49 @@ export default function UploadPage() {
     const today = new Date();
     return today.toISOString().split('T')[0]; // YYYY-MM-DD format
   });
+
+  // Check authentication on component mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/check-auth');
+        if (response.ok) {
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+      } finally {
+        setIsChecking(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsChecking(true);
+    setAuthError('');
+
+    try {
+      const response = await fetch('/api/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      if (response.ok) {
+        setIsAuthenticated(true);
+      } else {
+        setAuthError('Incorrect password. Please try again.');
+      }
+    } catch (error) {
+      setAuthError('Authentication failed. Please try again.');
+    } finally {
+      setIsChecking(false);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -105,6 +152,66 @@ export default function UploadPage() {
     }
   };
 
+  // Show loading state while checking authentication
+  if (isChecking) {
+    return (
+      <div className="max-w-2xl mx-auto p-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Checking authentication...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show password form if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-md mx-auto p-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Access Restricted</h1>
+            <p className="text-gray-600">Please enter the password to access the upload page</p>
+          </div>
+
+          <form onSubmit={handlePasswordSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter password"
+                required
+              />
+            </div>
+
+            {authError && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p className="text-red-800 text-sm">{authError}</p>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isChecking || !password.trim()}
+              className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {isChecking ? 'Verifying...' : 'Access Upload Page'}
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // Show upload form if authenticated
   return (
     <div className="max-w-2xl mx-auto p-8">
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">

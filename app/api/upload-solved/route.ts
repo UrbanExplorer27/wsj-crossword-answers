@@ -3,12 +3,19 @@ import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import OpenAI from 'openai';
 import fs from 'fs';
+import { requireUploadAuth } from '@/lib/auth';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
 export async function POST(request: NextRequest) {
+  // Check authentication
+  const authError = requireUploadAuth(request);
+  if (authError) {
+    return NextResponse.json({ error: authError.error }, { status: authError.status });
+  }
+
   const formData = await request.formData();
   const file = formData.get('file') as File | null;
   const date = formData.get('date') as string | null;

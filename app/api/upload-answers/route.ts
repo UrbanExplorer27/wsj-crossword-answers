@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { join } from 'path';
 import fs from 'fs';
+import { requireUploadAuth } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
+  // Check authentication
+  const authError = requireUploadAuth(request);
+  if (authError) {
+    return NextResponse.json({ error: authError.error }, { status: authError.status });
+  }
+
   const { text, date } = await request.json();
   
   console.log('📝 Received text:', JSON.stringify(text));
