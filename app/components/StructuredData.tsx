@@ -55,7 +55,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": `WSJ Crossword ${data.date} Answers (${data.date})`,
-      "description": `Complete answers and solutions for the Wall Street Journal crossword puzzle from ${data.dateStr}. ${data.totalAnswers} answers included.`,
+      "description": `Complete answers and solutions for the Wall Street Journal crossword puzzle from ${data.dateStr}. ${data.total_answers} answers included.`,
       "url": `https://wsj-crossword-answers.vercel.app/${data.date}`,
       "datePublished": data.date,
       "dateModified": data.uploaded_at || data.scrapedAt,

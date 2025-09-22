@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     console.log('🖼️ Converting PDF to images...');
     const convert = fromPath(filepath, {
       density: 300,
-      saveFilename: `crossword-${today}`,
+      saveFilename: `crossword-${selectedDate}`,
       savePath: join(process.cwd(), 'public', 'uploads'),
       format: 'png',
       width: 2000,

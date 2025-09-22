@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const { text, date } = await request.json();
+    const selectedDate = date || new Date().toISOString().split('T')[0];
 
     if (!text || !text.trim()) {
       return NextResponse.json({ error: 'No text provided' }, { status: 400 });

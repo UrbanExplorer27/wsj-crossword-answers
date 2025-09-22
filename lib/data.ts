@@ -11,9 +11,11 @@ interface Answer {
 interface AnswerData {
   date: string
   answers: Answer[]
-  scrapedAt: string
+  scrapedAt?: string
+  uploaded_at?: string
   source: string
-  totalAnswers: number
+  total_answers: number
+  high_confidence?: number
   screenshot?: string
 }
 

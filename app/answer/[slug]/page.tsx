@@ -32,9 +32,22 @@ export async function generateStaticParams() {
 // Generate metadata for each answer page
 export async function generateMetadata({ params }: AnswerPageProps): Promise<Metadata> {
   const answersData = readAnswersData();
-  const answer = findAnswerBySlug(answersData, params.slug);
+  let foundAnswer: any = null;
 
-  if (!answer) {
+  Object.entries(answersData).forEach(([date, dayData]: [string, any]) => {
+    dayData.answers.forEach((answer: any) => {
+      const slug = answer.clue
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, '')
+        .replace(/\s+/g, '-')
+        .trim();
+      if (slug === params.slug) {
+        foundAnswer = answer;
+      }
+    });
+  });
+
+  if (!foundAnswer) {
     return {
       title: 'Answer Not Found',
       alternates: {
@@ -43,18 +56,18 @@ export async function generateMetadata({ params }: AnswerPageProps): Promise<Met
     };
   }
 
-  const title = `${answer.clue} Crossword Answer | WSJ`;
-  const description = `Find the answer to "${answer.clue}" from the WSJ crossword puzzle. Complete crossword solution and more answers.`;
+  const title = `${foundAnswer.clue} Crossword Answer | WSJ`;
+  const description = `Find the answer to "${foundAnswer.clue}" from the WSJ crossword puzzle. Complete crossword solution and more answers.`;
 
   return {
     title,
     description,
     keywords: [
-      answer.clue.toLowerCase(),
+      foundAnswer.clue.toLowerCase(),
       'crossword answer',
       'WSJ crossword',
       'Wall Street Journal crossword',
-      answer.answer.toLowerCase(),
+      foundAnswer.answer.toLowerCase(),
       'crossword solution',
       'puzzle answer'
     ],
@@ -92,9 +105,24 @@ function findAnswerBySlug(answersData: any, slug: string) {
 
 export default function AnswerPage({ params }: AnswerPageProps) {
   const answersData = readAnswersData();
-  const answer = findAnswerBySlug(answersData, params.slug);
+  let foundAnswer: any = null;
+  let foundDate: string | null = null;
 
-  if (!answer) {
+  Object.entries(answersData).forEach(([date, dayData]: [string, any]) => {
+    dayData.answers.forEach((answer: any) => {
+      const slug = answer.clue
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, '')
+        .replace(/\s+/g, '-')
+        .trim();
+      if (slug === params.slug) {
+        foundAnswer = answer;
+        foundDate = date;
+      }
+    });
+  });
+
+  if (!foundAnswer) {
     notFound();
   }
 
@@ -104,7 +132,7 @@ export default function AnswerPage({ params }: AnswerPageProps) {
       <StructuredData 
         type="answer" 
         data={{
-          ...answer,
+          ...foundAnswer,
           slug: params.slug,
           date: foundDate
         }} 
@@ -114,13 +142,13 @@ export default function AnswerPage({ params }: AnswerPageProps) {
         <Breadcrumbs items={[
           { label: 'Home', href: '/' },
           { label: 'All Answers', href: '/answers' },
-          { label: answer.clue, href: `/answer/${params.slug}` }
+          { label: foundAnswer.clue, href: `/answer/${params.slug}` }
         ]} />
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {answer.clue} Crossword Answer
+            {foundAnswer.clue} Crossword Answer
           </h1>
           <p className="text-lg text-gray-600">
             Wall Street Journal Crossword Puzzle Solution
@@ -131,10 +159,10 @@ export default function AnswerPage({ params }: AnswerPageProps) {
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 mb-8">
           <div className="text-center">
             <div className="text-sm text-blue-600 font-medium mb-2">
-              Position: {answer.position}
+              Position: {foundAnswer.position}
             </div>
             <div className="text-6xl font-bold text-blue-700 mb-4">
-              {answer.answer}
+              {foundAnswer.answer}
             </div>
           </div>
         </div>
@@ -142,12 +170,12 @@ export default function AnswerPage({ params }: AnswerPageProps) {
         {/* SEO Content */}
         <div className="prose max-w-none">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Answer to "{answer.clue}"
+            Answer to "{foundAnswer.clue}"
           </h2>
           
           <p className="text-lg text-gray-700 mb-6">
-            The answer to the crossword clue <strong>"{answer.clue}"</strong> is <strong>"{answer.answer}"</strong>. 
-            This clue appeared in position {answer.position} of the Wall Street Journal crossword puzzle.
+            The answer to the crossword clue <strong>"{foundAnswer.clue}"</strong> is <strong>"{foundAnswer.answer}"</strong>. 
+            This clue appeared in position {foundAnswer.position} of the Wall Street Journal crossword puzzle.
           </p>
 
           <h3 className="text-xl font-semibold text-gray-900 mb-3">

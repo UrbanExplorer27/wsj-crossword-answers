@@ -34,7 +34,7 @@ export default async function sitemap() {
   }))
   
   // Generate individual answer pages
-  const answerPages = []
+  const answerPages: any[] = []
   Object.values(answersData).forEach((dayData: any) => {
     dayData.answers.forEach((answer: any) => {
       const slug = answer.clue
