@@ -59,10 +59,26 @@ export async function POST(request: NextRequest) {
       fs.writeFileSync(dataPath, JSON.stringify(allAnswers, null, 2));
       console.log(`💾 Manual answers saved to file system for ${selectedDate}`);
     } catch (error) {
-      // Fallback to memory store (production)
-      console.log('File system not available, using memory store');
-      addAnswerData(selectedDate, answersData);
-      console.log(`💾 Manual answers saved to memory store for ${selectedDate}`);
+      // Try public data file (production fallback)
+      try {
+        const publicDataPath = join(process.cwd(), 'public', 'data', 'answers.json');
+        let allAnswers: Record<string, any> = {};
+        try {
+          const existingData = fs.readFileSync(publicDataPath, 'utf8');
+          allAnswers = JSON.parse(existingData);
+        } catch (error) {
+          console.log('No existing public answers.json found, starting fresh.');
+        }
+        
+        allAnswers[selectedDate] = answersData;
+        fs.writeFileSync(publicDataPath, JSON.stringify(allAnswers, null, 2));
+        console.log(`💾 Manual answers saved to public data file for ${selectedDate}`);
+      } catch (publicError) {
+        // Final fallback to memory store
+        console.log('File system not available, using memory store');
+        addAnswerData(selectedDate, answersData);
+        console.log(`💾 Manual answers saved to memory store for ${selectedDate}`);
+      }
     }
     
     console.log(`💾 Manual answers saved for ${selectedDate}`);

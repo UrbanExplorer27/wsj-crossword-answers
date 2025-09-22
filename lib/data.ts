@@ -28,6 +28,7 @@ interface AnswerData {
 }
 
 const DATA_FILE = path.join(process.cwd(), 'data', 'answers.json')
+const PUBLIC_DATA_FILE = path.join(process.cwd(), 'public', 'data', 'answers.json')
 
 export async function getTodayAnswers(date: string): Promise<AnswerData | null> {
   try {
@@ -41,9 +42,21 @@ export async function getTodayAnswers(date: string): Promise<AnswerData | null> 
     
     return null
   } catch (error) {
-    // Fallback to memory store (production)
-    console.log('File system not available, using memory store')
-    return getAnswerDataByDate(date)
+    try {
+      // Try public data file (production fallback)
+      const data = await fs.readFile(PUBLIC_DATA_FILE, 'utf8')
+      const allAnswers = JSON.parse(data)
+      
+      if (allAnswers[date]) {
+        return allAnswers[date]
+      }
+      
+      return null
+    } catch (publicError) {
+      // Final fallback to memory store
+      console.log('File system not available, using memory store')
+      return getAnswerDataByDate(date)
+    }
   }
 }
 
@@ -55,9 +68,17 @@ export async function getAllDates(): Promise<string[]> {
     
     return Object.keys(allAnswers).sort((a, b) => b.localeCompare(a))
   } catch (error) {
-    // Fallback to memory store (production)
-    console.log('File system not available, using memory store for dates')
-    return getMemoryDates()
+    try {
+      // Try public data file (production fallback)
+      const data = await fs.readFile(PUBLIC_DATA_FILE, 'utf8')
+      const allAnswers = JSON.parse(data)
+      
+      return Object.keys(allAnswers).sort((a, b) => b.localeCompare(a))
+    } catch (publicError) {
+      // Final fallback to memory store
+      console.log('File system not available, using memory store for dates')
+      return getMemoryDates()
+    }
   }
 }
 
@@ -67,9 +88,15 @@ export async function getAllAnswers(): Promise<Record<string, AnswerData>> {
     const data = await fs.readFile(DATA_FILE, 'utf8')
     return JSON.parse(data)
   } catch (error) {
-    // Fallback to memory store (production)
-    console.log('File system not available, using memory store for all answers')
-    return getAnswersData()
+    try {
+      // Try public data file (production fallback)
+      const data = await fs.readFile(PUBLIC_DATA_FILE, 'utf8')
+      return JSON.parse(data)
+    } catch (publicError) {
+      // Final fallback to memory store
+      console.log('File system not available, using memory store for all answers')
+      return getAnswersData()
+    }
   }
 }
 
