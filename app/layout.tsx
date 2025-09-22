@@ -106,20 +106,17 @@ export default function RootLayout({
                   </p>
                 </div>
               </div>
-                  <nav className="flex space-x-1">
-                    <a href="/" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
-                      Today
-                    </a>
-                    <a href="/answers" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
-                      All Answers
-                    </a>
-                    <a href="/upload" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
-                      Upload
-                    </a>
-                    <a href="/archive" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
-                      Archive
-                    </a>
-                  </nav>
+                <nav className="flex space-x-1">
+                  <a href="/" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
+                    Today
+                  </a>
+                  <a href="/answers" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
+                    All Answers
+                  </a>
+                  <a href="/archive" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
+                    Archive
+                  </a>
+                </nav>
             </div>
           </div>
         </header>
