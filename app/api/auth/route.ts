@@ -3,11 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     const { password } = await request.json();
-    const correctPassword = process.env.UPLOAD_PASSWORD;
-
-    if (!correctPassword) {
-      return NextResponse.json({ error: 'Authentication not configured' }, { status: 500 });
-    }
+    const correctPassword = 'WSJ_Admin_2025_Secure_789!';
 
     if (password === correctPassword) {
       // Set a secure HTTP-only cookie for authentication
