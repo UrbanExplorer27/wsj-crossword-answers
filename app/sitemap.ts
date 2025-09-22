@@ -1,8 +1,9 @@
-import { getAllDates } from '@/lib/data'
+import { getAllDates, readAnswersData } from '@/lib/data'
 
 export default async function sitemap() {
   const dates = await getAllDates()
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://your-domain.com'
+  const answersData = readAnswersData()
+  const baseUrl = 'https://wsj-crossword-answers.vercel.app'
   
   const staticPages = [
     {
@@ -10,6 +11,12 @@ export default async function sitemap() {
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
       priority: 1,
+    },
+    {
+      url: `${baseUrl}/answers`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/archive`,
@@ -23,8 +30,27 @@ export default async function sitemap() {
     url: `${baseUrl}/${date}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
-    priority: 0.6,
+    priority: 0.7,
   }))
   
-  return [...staticPages, ...datePages]
+  // Generate individual answer pages
+  const answerPages = []
+  Object.values(answersData).forEach((dayData: any) => {
+    dayData.answers.forEach((answer: any) => {
+      const slug = answer.clue
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, '')
+        .replace(/\s+/g, '-')
+        .trim()
+      
+      answerPages.push({
+        url: `${baseUrl}/answer/${slug}`,
+        lastModified: new Date(dayData.uploaded_at || dayData.scrapedAt || new Date()),
+        changeFrequency: 'monthly' as const,
+        priority: 0.6,
+      })
+    })
+  })
+  
+  return [...staticPages, ...datePages, ...answerPages]
 }

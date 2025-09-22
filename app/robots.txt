@@ -1,4 +1,14 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://your-domain.com/sitemap.xml
+# Disallow admin/upload pages
+Disallow: /upload
+Disallow: /api/
+
+# Allow all answer pages
+Allow: /answer/
+Allow: /answers
+Allow: /archive
+Allow: /*/
+
+Sitemap: https://wsj-crossword-answers.vercel.app/sitemap.xml

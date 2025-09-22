@@ -35,8 +35,32 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "WSJ Crossword Answers",
+    "description": "Get instant access to Wall Street Journal crossword answers, clues, and solutions. Updated daily with the latest WSJ crossword puzzles.",
+    "url": "https://wsj-crossword-answers.vercel.app",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://wsj-crossword-answers.vercel.app/answers?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "WSJ Crossword Answers",
+      "url": "https://wsj-crossword-answers.vercel.app"
+    }
+  }
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      </head>
       <body className="min-h-screen bg-gray-50">
         <header className="bg-white shadow-lg border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

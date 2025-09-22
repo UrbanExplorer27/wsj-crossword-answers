@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { readAnswersData } from '@/lib/data';
+import StructuredData from '@/app/components/StructuredData';
 
 interface AnswerPageProps {
   params: {
@@ -98,7 +99,16 @@ export default function AnswerPage({ params }: AnswerPageProps) {
 
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
+    <>
+      <StructuredData 
+        type="answer" 
+        data={{
+          ...answer,
+          slug: params.slug,
+          date: foundDate
+        }} 
+      />
+      <div className="max-w-4xl mx-auto p-8">
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -172,5 +182,6 @@ export default function AnswerPage({ params }: AnswerPageProps) {
         </div>
       </div>
     </div>
+    </>
   );
 }
