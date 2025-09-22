@@ -17,12 +17,17 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
       "dateModified": data.uploaded_at || data.scrapedAt,
       "author": {
         "@type": "Organization",
-        "name": "WSJ Crossword Answers"
+        "name": "WSJ Crossword Answers",
+        "url": "https://wsj-crossword-answers.vercel.app"
       },
       "publisher": {
         "@type": "Organization",
         "name": "WSJ Crossword Answers",
-        "url": "https://wsj-crossword-answers.vercel.app"
+        "url": "https://wsj-crossword-answers.vercel.app",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://wsj-crossword-answers.vercel.app/logo.png"
+        }
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
@@ -35,7 +40,15 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
         'Wall Street Journal crossword',
         data.answer.toLowerCase(),
         'crossword solution'
-      ]
+      ],
+      "articleSection": "Crossword Answers",
+      "wordCount": data.clue.length + data.answer.length,
+      "inLanguage": "en-US",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "WSJ Crossword Answers",
+        "url": "https://wsj-crossword-answers.vercel.app"
+      }
     }
   } else if (type === 'date') {
     structuredData = {

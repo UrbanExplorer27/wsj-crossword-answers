@@ -6,16 +6,39 @@ export const metadata: Metadata = {
   description: 'Get instant access to Wall Street Journal crossword answers, clues, and solutions. Updated daily with the latest WSJ crossword puzzles.',
   keywords: 'WSJ crossword, Wall Street Journal crossword answers, crossword solutions, daily crossword, crossword clues',
   authors: [{ name: 'WSJ Crossword Answers' }],
+  creator: 'WSJ Crossword Answers',
+  publisher: 'WSJ Crossword Answers',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://wsj-crossword-answers.vercel.app'),
+  alternates: {
+    canonical: 'https://wsj-crossword-answers.vercel.app',
+  },
   openGraph: {
     title: 'WSJ Crossword Answers - Daily Solutions',
     description: 'Daily Wall Street Journal crossword answers and solutions',
     type: 'website',
     locale: 'en_US',
+    url: 'https://wsj-crossword-answers.vercel.app',
+    siteName: 'WSJ Crossword Answers',
+    images: [
+      {
+        url: 'https://wsj-crossword-answers.vercel.app/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'WSJ Crossword Answers',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'WSJ Crossword Answers',
     description: 'Daily Wall Street Journal crossword answers and solutions',
+    creator: '@wsjcrossword',
+    images: ['https://wsj-crossword-answers.vercel.app/og-image.png'],
   },
   robots: {
     index: true,
@@ -27,6 +50,9 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
+  },
+  verification: {
+    google: 'your-google-verification-code',
   },
 }
 
@@ -101,10 +127,40 @@ export default function RootLayout({
           {children}
         </main>
         <footer className="bg-white border-t mt-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <p className="text-center text-gray-600 text-sm">
-              © 2024 WSJ Crossword Answers. Not affiliated with The Wall Street Journal.
-            </p>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Links</h3>
+                <ul className="space-y-2">
+                  <li><a href="/" className="text-gray-600 hover:text-blue-600 transition-colors">Today's Answers</a></li>
+                  <li><a href="/answers" className="text-gray-600 hover:text-blue-600 transition-colors">All Answers</a></li>
+                  <li><a href="/archive" className="text-gray-600 hover:text-blue-600 transition-colors">Archive</a></li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Resources</h3>
+                <ul className="space-y-2">
+                  <li><a href="/sitemap.xml" className="text-gray-600 hover:text-blue-600 transition-colors">Sitemap</a></li>
+                  <li><a href="/robots.txt" className="text-gray-600 hover:text-blue-600 transition-colors">Robots.txt</a></li>
+                  <li><a href="https://www.wsj.com/puzzles/crossword" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 transition-colors">WSJ Crossword</a></li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">About</h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Get instant access to Wall Street Journal crossword answers and solutions. 
+                  Updated daily with the latest WSJ crossword puzzles.
+                </p>
+                <p className="text-gray-500 text-xs">
+                  Not affiliated with The Wall Street Journal.
+                </p>
+              </div>
+            </div>
+            <div className="border-t border-gray-200 pt-6">
+              <p className="text-center text-gray-600 text-sm">
+                © 2025 WSJ Crossword Answers. All rights reserved.
+              </p>
+            </div>
           </div>
         </footer>
       </body>

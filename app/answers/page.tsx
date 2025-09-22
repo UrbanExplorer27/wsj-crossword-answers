@@ -1,5 +1,6 @@
 import { readAnswersData } from '@/lib/data';
 import { Metadata } from 'next';
+import Breadcrumbs from '@/app/components/Breadcrumbs';
 
 export const metadata: Metadata = {
   title: 'WSJ Crossword Answers | Complete Solutions',
@@ -45,6 +46,12 @@ export default function AnswersPage() {
 
   return (
     <div className="max-w-6xl mx-auto p-8">
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[
+        { label: 'Home', href: '/' },
+        { label: 'All Answers', href: '/answers' }
+      ]} />
+      
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
           WSJ Crossword Answers

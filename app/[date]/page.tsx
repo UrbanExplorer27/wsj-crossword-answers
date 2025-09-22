@@ -2,6 +2,7 @@ import { getTodayAnswers, getAllDates } from '@/lib/data'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
+import Breadcrumbs from '@/app/components/Breadcrumbs'
 
 interface PageProps {
   params: {
@@ -60,6 +61,12 @@ export default async function DatePage({ params }: PageProps) {
 
   return (
     <div>
+      {/* Breadcrumbs */}
+      <Breadcrumbs items={[
+        { label: 'Home', href: '/' },
+        { label: `WSJ Crossword ${answers.date}`, href: `/${answers.date}` }
+      ]} />
+      
       {/* Header with navigation */}
       <div className="flex justify-between items-center mb-8">
         <div>

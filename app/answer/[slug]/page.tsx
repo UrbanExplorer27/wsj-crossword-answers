@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { readAnswersData } from '@/lib/data';
 import StructuredData from '@/app/components/StructuredData';
+import Breadcrumbs from '@/app/components/Breadcrumbs';
 
 interface AnswerPageProps {
   params: {
@@ -109,6 +110,12 @@ export default function AnswerPage({ params }: AnswerPageProps) {
         }} 
       />
       <div className="max-w-4xl mx-auto p-8">
+        {/* Breadcrumbs */}
+        <Breadcrumbs items={[
+          { label: 'Home', href: '/' },
+          { label: 'All Answers', href: '/answers' },
+          { label: answer.clue, href: `/answer/${params.slug}` }
+        ]} />
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
         {/* Header */}
         <div className="text-center mb-8">
