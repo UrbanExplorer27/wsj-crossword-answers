@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   description: 'Browse all Wall Street Journal crossword answers and solutions. Find answers to any crossword clue with our comprehensive database.',
   keywords: ['WSJ crossword answers', 'Wall Street Journal crossword', 'crossword solutions', 'puzzle answers'],
   alternates: {
-    canonical: 'https://wsj-crossword-answers.vercel.app/answers',
+    canonical: 'https://crosswordwiki.com/answers',
   },
   openGraph: {
     title: 'WSJ Crossword Answers | Complete Solutions',
     description: 'Browse all Wall Street Journal crossword answers and solutions. Find answers to any crossword clue with our comprehensive database.',
     type: 'website',
-    url: 'https://wsj-crossword-answers.vercel.app/answers',
+    url: 'https://crosswordwiki.com/answers',
   },
 };
 

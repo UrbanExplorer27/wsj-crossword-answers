@@ -12,26 +12,26 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
       "@type": "Article",
       "headline": `${data.clue} Crossword Answer | WSJ`,
       "description": `Find the answer to "${data.clue}" from the WSJ crossword puzzle. Answer: ${data.answer} (${data.position}).`,
-      "url": `https://wsj-crossword-answers.vercel.app/answer/${data.slug}`,
+      "url": `https://crosswordwiki.com/answer/${data.slug}`,
       "datePublished": data.date,
       "dateModified": data.uploaded_at || data.scrapedAt,
       "author": {
         "@type": "Organization",
         "name": "WSJ Crossword Answers",
-        "url": "https://wsj-crossword-answers.vercel.app"
+        "url": "https://crosswordwiki.com"
       },
       "publisher": {
         "@type": "Organization",
         "name": "WSJ Crossword Answers",
-        "url": "https://wsj-crossword-answers.vercel.app",
+        "url": "https://crosswordwiki.com",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://wsj-crossword-answers.vercel.app/logo.png"
+          "url": "https://crosswordwiki.com/logo.png"
         }
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `https://wsj-crossword-answers.vercel.app/answer/${data.slug}`
+        "@id": `https://crosswordwiki.com/answer/${data.slug}`
       },
       "keywords": [
         data.clue.toLowerCase(),
@@ -47,7 +47,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
       "isPartOf": {
         "@type": "WebSite",
         "name": "WSJ Crossword Answers",
-        "url": "https://wsj-crossword-answers.vercel.app"
+        "url": "https://crosswordwiki.com"
       }
     }
   } else if (type === 'date') {
@@ -56,7 +56,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
       "@type": "Article",
       "headline": `WSJ Crossword ${data.date} Answers (${data.date})`,
       "description": `Complete answers and solutions for the Wall Street Journal crossword puzzle from ${data.dateStr}. ${data.total_answers} answers included.`,
-      "url": `https://wsj-crossword-answers.vercel.app/${data.date}`,
+      "url": `https://crosswordwiki.com/${data.date}`,
       "datePublished": data.date,
       "dateModified": data.uploaded_at || data.scrapedAt,
       "author": {
@@ -66,11 +66,11 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
       "publisher": {
         "@type": "Organization",
         "name": "WSJ Crossword Answers",
-        "url": "https://wsj-crossword-answers.vercel.app"
+        "url": "https://crosswordwiki.com"
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `https://wsj-crossword-answers.vercel.app/${data.date}`
+        "@id": `https://crosswordwiki.com/${data.date}`
       },
       "keywords": [
         `WSJ crossword ${data.date} answers`,

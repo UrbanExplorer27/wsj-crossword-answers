@@ -3,7 +3,7 @@ import { getAllDates, readAnswersData } from '@/lib/data'
 export default async function sitemap() {
   const dates = await getAllDates()
   const answersData = readAnswersData()
-  const baseUrl = 'https://wsj-crossword-answers.vercel.app'
+  const baseUrl = 'https://crosswordwiki.com'
   
   const staticPages = [
     {

@@ -13,20 +13,20 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://wsj-crossword-answers.vercel.app'),
+  metadataBase: new URL('https://crosswordwiki.com'),
   alternates: {
-    canonical: 'https://wsj-crossword-answers.vercel.app',
+    canonical: 'https://crosswordwiki.com',
   },
   openGraph: {
     title: 'WSJ Crossword Answers - Daily Solutions',
     description: 'Daily Wall Street Journal crossword answers and solutions',
     type: 'website',
     locale: 'en_US',
-    url: 'https://wsj-crossword-answers.vercel.app',
+    url: 'https://crosswordwiki.com',
     siteName: 'WSJ Crossword Answers',
     images: [
       {
-        url: 'https://wsj-crossword-answers.vercel.app/og-image.png',
+        url: 'https://crosswordwiki.com/og-image.png',
         width: 1200,
         height: 630,
         alt: 'WSJ Crossword Answers',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: 'WSJ Crossword Answers',
     description: 'Daily Wall Street Journal crossword answers and solutions',
     creator: '@wsjcrossword',
-    images: ['https://wsj-crossword-answers.vercel.app/og-image.png'],
+    images: ['https://crosswordwiki.com/og-image.png'],
   },
   robots: {
     index: true,
@@ -66,16 +66,16 @@ export default function RootLayout({
     "@type": "WebSite",
     "name": "WSJ Crossword Answers",
     "description": "Get instant access to Wall Street Journal crossword answers, clues, and solutions. Updated daily with the latest WSJ crossword puzzles.",
-    "url": "https://wsj-crossword-answers.vercel.app",
+    "url": "https://crosswordwiki.com",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://wsj-crossword-answers.vercel.app/answers?q={search_term_string}",
+      "target": "https://crosswordwiki.com/answers?q={search_term_string}",
       "query-input": "required name=search_term_string"
     },
     "publisher": {
       "@type": "Organization",
       "name": "WSJ Crossword Answers",
-      "url": "https://wsj-crossword-answers.vercel.app"
+      "url": "https://crosswordwiki.com"
     }
   }
 

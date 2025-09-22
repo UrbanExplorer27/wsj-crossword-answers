@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: AnswerPageProps): Promise<Met
     return {
       title: 'Answer Not Found',
       alternates: {
-        canonical: `https://wsj-crossword-answers.vercel.app/answer/${params.slug}`,
+        canonical: `https://crosswordwiki.com/answer/${params.slug}`,
       },
     };
   }
@@ -72,13 +72,13 @@ export async function generateMetadata({ params }: AnswerPageProps): Promise<Met
       'puzzle answer'
     ],
     alternates: {
-      canonical: `https://wsj-crossword-answers.vercel.app/answer/${params.slug}`,
+      canonical: `https://crosswordwiki.com/answer/${params.slug}`,
     },
     openGraph: {
       title,
       description,
       type: 'article',
-      url: `https://wsj-crossword-answers.vercel.app/answer/${params.slug}`,
+      url: `https://crosswordwiki.com/answer/${params.slug}`,
     },
     twitter: {
       card: 'summary',

@@ -6,13 +6,13 @@ export const metadata = {
   description: 'Browse all previous WSJ crossword answers and solutions in our comprehensive archive.',
   keywords: 'WSJ crossword archive, Wall Street Journal crossword history, crossword answers archive',
   alternates: {
-    canonical: 'https://wsj-crossword-answers.vercel.app/archive',
+    canonical: 'https://crosswordwiki.com/archive',
   },
   openGraph: {
     title: 'WSJ Crossword Archive - All Previous Answers',
     description: 'Browse all previous WSJ crossword answers and solutions in our comprehensive archive.',
     type: 'website',
-    url: 'https://wsj-crossword-answers.vercel.app/archive',
+    url: 'https://crosswordwiki.com/archive',
   },
 }
 

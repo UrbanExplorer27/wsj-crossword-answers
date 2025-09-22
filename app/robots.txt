@@ -11,4 +11,4 @@ Allow: /answers
 Allow: /archive
 Allow: /*/
 
-Sitemap: https://wsj-crossword-answers.vercel.app/sitemap.xml
+Sitemap: https://crosswordwiki.com/sitemap.xml

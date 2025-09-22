@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: PageProps) {
       title: 'WSJ Crossword Answers Not Found',
       description: 'The requested WSJ crossword answers are not available.',
       alternates: {
-        canonical: `https://wsj-crossword-answers.vercel.app/${params.date}`,
+        canonical: `https://crosswordwiki.com/${params.date}`,
       },
     }
   }
@@ -35,14 +35,14 @@ export async function generateMetadata({ params }: PageProps) {
     description: `Complete answers and solutions for the Wall Street Journal crossword puzzle from ${dateStr}. ${answers.total_answers || answers.answers.length} answers included with individual answer pages.`,
     keywords: `WSJ crossword ${answers.date} answers, Wall Street Journal crossword ${answers.date}, ${dateStr}, crossword solutions, crossword clues, ${answers.date}`,
     alternates: {
-      canonical: `https://wsj-crossword-answers.vercel.app/${answers.date}`,
+      canonical: `https://crosswordwiki.com/${answers.date}`,
     },
     openGraph: {
       title: `WSJ Crossword ${answers.date} Answers (${answers.date})`,
       description: `Complete answers for the WSJ crossword from ${dateStr}`,
       type: 'article',
       publishedTime: answers.uploaded_at || answers.scrapedAt,
-      url: `https://wsj-crossword-answers.vercel.app/${answers.date}`,
+      url: `https://crosswordwiki.com/${answers.date}`,
     },
   }
 }
