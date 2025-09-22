@@ -75,7 +75,7 @@ function parseManualAnswers(text: string): any[] {
   
   for (const line of lines) {
     // Skip empty lines and section headers
-    if (!line || line === 'Across' || line === 'Down' || line.startsWith('•') === false) {
+    if (!line || line === 'Across' || line === 'Down') {
       continue;
     }
     
@@ -97,6 +97,8 @@ function parseManualAnswers(text: string): any[] {
     
     // Try other formats as fallback
     const patterns = [
+      // Format: Clue text, 1A, ANSWER
+      /^(.+?),\s*(\d+[AD]),\s*(.+)$/i,
       // Format: 1A: FASTEN
       /^(\d+[AD]):\s*(.+)$/i,
       // Format: 1A - FASTEN
@@ -114,19 +116,24 @@ function parseManualAnswers(text: string): any[] {
       if (match) {
         let position: string;
         let answer: string;
+        let clue: string;
         
-        if (pattern.source.includes('\\(')) {
+        if (pattern.source.includes(',\\s*\\d+[AD],')) {
+          // For format: Clue text, 1A, ANSWER
+          clue = match[1].trim();
+          position = match[2].trim();
+          answer = match[3].trim();
+        } else if (pattern.source.includes('\\(')) {
           // For patterns where answer comes first
           answer = match[1].trim();
           position = match[2].trim();
+          clue = `Answer for ${position}`;
         } else {
           // For patterns where position comes first
           position = match[1].trim();
           answer = match[2].trim();
+          clue = `Answer for ${position}`;
         }
-        
-        // Generate a clue based on the answer (since we don't have the actual clue)
-        const clue = `Answer for ${position}`;
         
         answers.push({
           clue: clue,
