@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { join } from 'path';
 import fs from 'fs';
 import { requireUploadAuth } from '@/lib/auth';
+import { addAnswerData, getAnswersData } from '@/lib/memory-store';
 
 export async function POST(request: NextRequest) {
   // Check authentication
@@ -40,17 +41,26 @@ export async function POST(request: NextRequest) {
       high_confidence: answers.filter((a: any) => a.confidence > 0.8).length
     };
 
-    const dataPath = join(process.cwd(), 'data', 'answers.json');
-    let allAnswers: Record<string, any> = {};
+    // Try file system first (development)
     try {
-      const existingData = fs.readFileSync(dataPath, 'utf8');
-      allAnswers = JSON.parse(existingData);
+      const dataPath = join(process.cwd(), 'data', 'answers.json');
+      let allAnswers: Record<string, any> = {};
+      try {
+        const existingData = fs.readFileSync(dataPath, 'utf8');
+        allAnswers = JSON.parse(existingData);
+      } catch (error) {
+        console.log('No existing answers.json found or file is empty, starting fresh.');
+      }
+      
+      allAnswers[selectedDate] = answersData;
+      fs.writeFileSync(dataPath, JSON.stringify(allAnswers, null, 2));
+      console.log(`💾 Manual answers saved to file system for ${selectedDate}`);
     } catch (error) {
-      console.log('No existing answers.json found or file is empty, starting fresh.');
+      // Fallback to memory store (production)
+      console.log('File system not available, using memory store');
+      addAnswerData(selectedDate, answersData);
+      console.log(`💾 Manual answers saved to memory store for ${selectedDate}`);
     }
-    
-    allAnswers[selectedDate] = answersData;
-    fs.writeFileSync(dataPath, JSON.stringify(allAnswers, null, 2));
     
     console.log(`💾 Manual answers saved for ${selectedDate}`);
     console.log(`📄 Generated ${answers.length} individual answer pages`);
