@@ -11,7 +11,7 @@ export default function StructuredData({ type, data }: StructuredDataProps) {
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": `${data.clue.replace(/^Answer for /, '')} answer`,
-      "description": `Find the answer to "${data.clue}" from the WSJ crossword puzzle. Answer: ${data.answer} (${data.position}).`,
+      "description": `Find the answer to "${data.clue.replace(/^Answer for /, '')}" from the WSJ crossword puzzle. Answer: ${data.answer} (${data.position}).`,
       "url": `https://crosswordwiki.com/answer/${data.slug}`,
       "datePublished": data.date,
       "dateModified": data.uploaded_at || data.scrapedAt,

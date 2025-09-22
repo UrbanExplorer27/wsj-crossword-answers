@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: AnswerPageProps): Promise<Met
 
   const cleanClue = foundAnswer.clue.replace(/^Answer for /, '');
   const title = `${cleanClue} answer`;
-  const description = `Find the answer to "${foundAnswer.clue}" from the WSJ crossword puzzle. Complete crossword solution and more answers.`;
+  const description = `Find the answer to "${cleanClue}" from the WSJ crossword puzzle. Complete crossword solution and more answers.`;
 
   return {
     title,
