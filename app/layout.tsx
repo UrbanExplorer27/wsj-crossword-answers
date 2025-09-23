@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import MobileMenu from './components/MobileMenu'
 
 export const metadata: Metadata = {
   title: 'WSJ Crossword Answers - Daily Solutions & Clues',
@@ -88,53 +89,6 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-gray-50">
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              document.addEventListener('DOMContentLoaded', function() {
-                const mobileMenuButton = document.getElementById('mobile-menu-button');
-                const mobileMenu = document.getElementById('mobile-menu');
-                
-                if (mobileMenuButton && mobileMenu) {
-                  mobileMenuButton.addEventListener('click', function() {
-                    const isHidden = mobileMenu.classList.contains('hidden');
-                    
-                    if (isHidden) {
-                      mobileMenu.classList.remove('hidden');
-                      mobileMenuButton.setAttribute('aria-label', 'Close mobile menu');
-                      // Change icon to X
-                      mobileMenuButton.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
-                    } else {
-                      mobileMenu.classList.add('hidden');
-                      mobileMenuButton.setAttribute('aria-label', 'Open mobile menu');
-                      // Change icon back to hamburger
-                      mobileMenuButton.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
-                    }
-                  });
-                  
-                  // Close mobile menu when clicking on a link
-                  const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-                  mobileMenuLinks.forEach(link => {
-                    link.addEventListener('click', function() {
-                      mobileMenu.classList.add('hidden');
-                      mobileMenuButton.setAttribute('aria-label', 'Open mobile menu');
-                      mobileMenuButton.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
-                    });
-                  });
-                  
-                  // Close mobile menu when clicking outside
-                  document.addEventListener('click', function(event) {
-                    if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
-                      mobileMenu.classList.add('hidden');
-                      mobileMenuButton.setAttribute('aria-label', 'Open mobile menu');
-                      mobileMenuButton.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
-                    }
-                  });
-                }
-              });
-            `,
-          }}
-        />
         <header className="bg-white shadow-lg border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4 sm:py-6">
@@ -167,31 +121,8 @@ export default function RootLayout({
                 </a>
               </nav>
 
-              {/* Mobile Menu Button */}
-              <button 
-                id="mobile-menu-button"
-                className="md:hidden p-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                aria-label="Open mobile menu"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Mobile Navigation Menu */}
-            <div id="mobile-menu" className="hidden md:hidden border-t border-gray-200 pt-4 pb-4">
-              <nav className="flex flex-col space-y-2">
-                <a href="/" className="px-4 py-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
-                  Today
-                </a>
-                <a href="/answers" className="px-4 py-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
-                  All Answers
-                </a>
-                <a href="/archive" className="px-4 py-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
-                  Archive
-                </a>
-              </nav>
+              {/* Mobile Menu Component */}
+              <MobileMenu />
             </div>
           </div>
         </header>
@@ -209,14 +140,13 @@ export default function RootLayout({
                   <li><a href="/archive" className="text-gray-600 hover:text-blue-600 transition-colors">Archive</a></li>
                 </ul>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Resources</h3>
-                <ul className="space-y-2">
-                  <li><a href="/sitemap.xml" className="text-gray-600 hover:text-blue-600 transition-colors">Sitemap</a></li>
-                  <li><a href="/robots.txt" className="text-gray-600 hover:text-blue-600 transition-colors">Robots.txt</a></li>
-                  <li><a href="https://www.wsj.com/puzzles/crossword" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 transition-colors">WSJ Crossword</a></li>
-                </ul>
-              </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Resources</h3>
+                  <ul className="space-y-2">
+                    <li><a href="/sitemap.xml" className="text-gray-600 hover:text-blue-600 transition-colors">Sitemap</a></li>
+                    <li><a href="https://www.wsj.com/puzzles/crossword" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 transition-colors">WSJ Crossword</a></li>
+                  </ul>
+                </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">About</h3>
                 <p className="text-gray-600 text-sm mb-4">

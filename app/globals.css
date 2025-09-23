@@ -71,8 +71,10 @@ body {
 .gap-6 { gap: 1.5rem; }
 
 /* Typography */
-.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.text-6xl { font-size: 3.75rem; line-height: 1; }
+.text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
 .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
 .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
 .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
 .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
@@ -386,44 +388,44 @@ input[type="file"]::-webkit-file-upload-button:hover {
 }
 
 /* Mobile menu styles */
-#mobile-menu {
+.mobile-menu-transition {
   transition: all 0.3s ease-in-out;
 }
 
-#mobile-menu.hidden {
+.mobile-menu-hidden {
   opacity: 0;
   transform: translateY(-10px);
   pointer-events: none;
 }
 
-#mobile-menu:not(.hidden) {
+.mobile-menu-visible {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
 
 /* Mobile menu button animation */
-#mobile-menu-button {
+.mobile-menu-button {
   transition: all 0.2s ease;
 }
 
-#mobile-menu-button:hover {
+.mobile-menu-button:hover {
   transform: scale(1.05);
 }
 
 /* Mobile menu links */
-#mobile-menu a {
+.mobile-menu-link {
   transition: all 0.2s ease;
   border-radius: 8px;
 }
 
-#mobile-menu a:hover {
+.mobile-menu-link:hover {
   transform: translateX(4px);
 }
 
 /* Touch-friendly mobile menu */
 @media (max-width: 767px) {
-  #mobile-menu a {
+  .mobile-menu-link {
     padding: 12px 16px;
     font-size: 16px;
     min-height: 44px;
@@ -431,11 +433,125 @@ input[type="file"]::-webkit-file-upload-button:hover {
     align-items: center;
   }
   
-  #mobile-menu-button {
+  .mobile-menu-button {
     padding: 12px;
     min-height: 44px;
     min-width: 44px;
   }
+}
+
+/* Question mark reveal feature */
+.question-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 8px;
+  border: 2px dashed #93c5fd;
+  transition: all 0.3s ease;
+}
+
+.question-mark svg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+/* Answer card hover effects for question mark */
+.answer-card.group:hover .question-mark {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border-color: #60a5fa;
+  transform: scale(1.02);
+}
+
+.answer-card.group:hover .question-mark svg {
+  color: #3b82f6;
+  animation: none;
+  transform: scale(1.1);
+}
+
+/* Fix for answer text strikethrough issue */
+#main-answer {
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  text-decoration-style: none !important;
+  text-decoration-color: transparent !important;
+}
+
+/* Mobile-specific question mark styles */
+@media (max-width: 639px) {
+  .question-mark svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (min-width: 640px) {
+  .question-mark svg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .question-mark svg {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* Large question mark for individual answer pages */
+.question-mark-large {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 12px;
+  border: 3px dashed #93c5fd;
+  transition: all 0.3s ease;
+}
+
+.question-mark-large svg {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+  animation: pulse-large 2s infinite;
+}
+
+@keyframes pulse-large {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+/* Answer card hover effects for large question mark */
+.group:hover .question-mark-large {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border-color: #60a5fa;
+  transform: scale(1.02);
+}
+
+.group:hover .question-mark-large svg {
+  color: #3b82f6;
+  animation: none;
+  transform: scale(1.2);
 }
 
 @media (min-width: 640px) {

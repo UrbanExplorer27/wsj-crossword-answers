@@ -159,19 +159,31 @@ export default async function AnswerPage({ params }: AnswerPageProps) {
         </div>
 
         {/* Answer Card */}
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 mb-8">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 mb-8 group cursor-pointer">
           <div className="text-center">
             <div className="text-sm text-blue-600 font-medium mb-2">
               Position: {foundAnswer.position}
             </div>
-            <div className="text-6xl font-bold text-blue-700 mb-4">
-              {foundAnswer.answer}
+            <div className="relative">
+              <div className="text-6xl font-bold text-blue-700 mb-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100" id="main-answer">
+                {foundAnswer.answer}
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-500 group-hover:opacity-0" id="main-question">
+                <div className="question-mark-large">
+                  <svg className="w-16 h-16 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-1.5-1.5L14.5 12 8.5 6l1.5-1.5L17.5 12l-7.5 7.5z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div className="text-sm text-blue-600 font-medium">
+              Hover to reveal answer
             </div>
           </div>
         </div>
 
         {/* SEO Content */}
-        <div className="prose max-w-none">
+        <div className="max-w-none">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Answer to "{foundAnswer.clue.replace(/^Answer for /, '')}"
           </h2>

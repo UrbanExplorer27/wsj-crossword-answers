@@ -150,20 +150,34 @@ export default async function HomePage() {
               .trim();
             
             return (
-              <a
+              <div
                 key={index}
-                href={`/answer/${slug}`}
-                className="answer-card hover:shadow-lg hover:border-blue-200 transition-all"
+                className="answer-card hover:shadow-lg hover:border-blue-200 transition-all relative group cursor-pointer"
+                onClick={() => window.location.href = `/answer/${slug}`}
               >
                 <div className="flex justify-between items-start mb-2">
                   <span className="position-badge text-xs px-2 py-1">{answer.position}</span>
                 </div>
                 <div className="clue-text mb-2 text-sm sm:text-base">{answer.clue}</div>
-                <div className="answer-text text-xl sm:text-2xl lg:text-3xl">{answer.answer}</div>
-                <div className="text-xs text-blue-600 mt-2 font-medium">
-                  View full answer page →
+                
+                {/* Answer with question mark overlay */}
+                <div className="relative">
+                  <div className="answer-text text-xl sm:text-2xl lg:text-3xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" id={`answer-${index}`}>
+                    {answer.answer}
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300 group-hover:opacity-0" id={`question-${index}`}>
+                    <div className="question-mark">
+                      <svg className="w-8 h-8 sm:w-12 sm:h-12 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-1.5-1.5L14.5 12 8.5 6l1.5-1.5L17.5 12l-7.5 7.5z"/>
+                      </svg>
+                    </div>
+                  </div>
                 </div>
-              </a>
+                
+                <div className="text-xs text-blue-600 mt-2 font-medium">
+                  Click to reveal answer →
+                </div>
+              </div>
             );
           })}
         </div>
@@ -183,7 +197,7 @@ export default async function HomePage() {
       </div>
 
       {/* SEO Content */}
-      <div className="mt-12 prose max-w-none">
+      <div className="mt-12 max-w-none">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
           WSJ Crossword Answers for {new Date(answers.date).toLocaleDateString('en-US', { 
             weekday: 'long', 

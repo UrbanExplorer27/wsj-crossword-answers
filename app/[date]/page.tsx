@@ -170,7 +170,7 @@ export default async function DatePage({ params }: PageProps) {
       </div>
 
       {/* SEO Content */}
-      <div className="mt-12 prose max-w-none">
+      <div className="mt-12 max-w-none">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
           WSJ Crossword {answers.date} Answers ({answers.date})
         </h2>
