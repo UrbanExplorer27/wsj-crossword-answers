@@ -1,6 +1,7 @@
 import { readAnswersData } from '@/lib/data';
 import { Metadata } from 'next';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
+import AnswerCard from '@/app/components/AnswerCard';
 
 export const metadata: Metadata = {
   title: 'WSJ Crossword Answers | Complete Solutions',
@@ -81,27 +82,14 @@ export default function AnswersPage() {
           const slug = generateSlug(answer.clue);
           
           return (
-            <a
+            <AnswerCard
               key={index}
-              href={`/answer/${slug}`}
-              className="block bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:border-blue-200 transition-all"
-            >
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                  {answer.clue}
-                </h3>
-                <div className="text-2xl font-bold text-blue-600 mb-2">
-                  {answer.answer}
-                </div>
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <span>{answer.position}</span>
-                </div>
-              </div>
-              
-              <div className="text-xs text-gray-400">
-                {new Date(answer.date).toLocaleDateString()}
-              </div>
-            </a>
+              answer={answer.answer}
+              position={answer.position}
+              clue={answer.clue}
+              date={answer.date}
+              slug={slug}
+            />
           );
         })}
       </div>

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import Breadcrumbs from '@/app/components/Breadcrumbs'
+import AnswerCardCompact from '@/app/components/AnswerCardCompact'
 
 interface PageProps {
   params: Promise<{
@@ -150,20 +151,13 @@ export default async function DatePage({ params }: PageProps) {
               .trim();
             
             return (
-              <a
+              <AnswerCardCompact
                 key={index}
-                href={`/answer/${slug}`}
-                className="answer-card hover:shadow-lg hover:border-blue-200 transition-all"
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <span className="position-badge">{answer.position}</span>
-                </div>
-                <div className="clue-text mb-2">{answer.clue}</div>
-                <div className="answer-text">{answer.answer}</div>
-                <div className="text-xs text-blue-600 mt-2 font-medium">
-                  View full answer page →
-                </div>
-              </a>
+                answer={answer.answer}
+                position={answer.position}
+                clue={answer.clue}
+                slug={slug}
+              />
             );
           })}
         </div>

@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { readAnswersData } from '@/lib/data';
 import StructuredData from '@/app/components/StructuredData';
 import Breadcrumbs from '@/app/components/Breadcrumbs';
+import AnswerReveal from '@/app/components/AnswerReveal';
 
 interface AnswerPageProps {
   params: Promise<{
@@ -158,29 +159,12 @@ export default async function AnswerPage({ params }: AnswerPageProps) {
           </p>
         </div>
 
-        {/* Answer Card */}
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 mb-8 group cursor-pointer">
-          <div className="text-center">
-            <div className="text-sm text-blue-600 font-medium mb-2">
-              Position: {foundAnswer.position}
-            </div>
-            <div className="relative">
-              <div className="text-6xl font-bold text-blue-700 mb-4 opacity-0 transition-opacity duration-500 group-hover:opacity-100" id="main-answer">
-                {foundAnswer.answer}
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-500 group-hover:opacity-0" id="main-question">
-                <div className="question-mark-large">
-                  <svg className="w-16 h-16 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-1.5-1.5L14.5 12 8.5 6l1.5-1.5L17.5 12l-7.5 7.5z"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className="text-sm text-blue-600 font-medium">
-              Hover to reveal answer
-            </div>
-          </div>
-        </div>
+        {/* Answer Reveal Component */}
+        <AnswerReveal 
+          answer={foundAnswer.answer}
+          position={foundAnswer.position}
+          clue={foundAnswer.clue}
+        />
 
         {/* SEO Content */}
         <div className="max-w-none">
@@ -189,18 +173,18 @@ export default async function AnswerPage({ params }: AnswerPageProps) {
           </h2>
           
           <p className="text-lg text-gray-700 mb-6">
-            The answer to the crossword clue <strong>"{foundAnswer.clue.replace(/^Answer for /, '')}"</strong> is <strong>"{foundAnswer.answer}"</strong>. 
-            This clue appeared in position {foundAnswer.position} of the Wall Street Journal crossword puzzle.
+            The crossword clue <strong>"{foundAnswer.clue.replace(/^Answer for /, '')}"</strong> appeared in position {foundAnswer.position} of the Wall Street Journal crossword puzzle. 
+            Click the "Reveal Answer" button above to see the solution.
           </p>
 
           <h3 className="text-xl font-semibold text-gray-900 mb-3">
-            About This Answer
+            About This Clue
           </h3>
           
           <p className="text-gray-700 mb-4">
-            This crossword answer was extracted using advanced AI technology to help crossword enthusiasts 
-            find solutions quickly and accurately. The WSJ crossword puzzle is known for its challenging 
-            clues and clever wordplay.
+            This crossword clue was extracted from the Wall Street Journal crossword puzzle using advanced AI technology. 
+            The WSJ crossword is known for its challenging clues and clever wordplay. Once you reveal the answer above, 
+            you'll see how the clue relates to the solution.
           </p>
 
           <h3 className="text-xl font-semibold text-gray-900 mb-3">
