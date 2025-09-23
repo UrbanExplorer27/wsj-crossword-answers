@@ -88,9 +88,56 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-gray-50">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              document.addEventListener('DOMContentLoaded', function() {
+                const mobileMenuButton = document.getElementById('mobile-menu-button');
+                const mobileMenu = document.getElementById('mobile-menu');
+                
+                if (mobileMenuButton && mobileMenu) {
+                  mobileMenuButton.addEventListener('click', function() {
+                    const isHidden = mobileMenu.classList.contains('hidden');
+                    
+                    if (isHidden) {
+                      mobileMenu.classList.remove('hidden');
+                      mobileMenuButton.setAttribute('aria-label', 'Close mobile menu');
+                      // Change icon to X
+                      mobileMenuButton.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                    } else {
+                      mobileMenu.classList.add('hidden');
+                      mobileMenuButton.setAttribute('aria-label', 'Open mobile menu');
+                      // Change icon back to hamburger
+                      mobileMenuButton.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+                    }
+                  });
+                  
+                  // Close mobile menu when clicking on a link
+                  const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+                  mobileMenuLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                      mobileMenu.classList.add('hidden');
+                      mobileMenuButton.setAttribute('aria-label', 'Open mobile menu');
+                      mobileMenuButton.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+                    });
+                  });
+                  
+                  // Close mobile menu when clicking outside
+                  document.addEventListener('click', function(event) {
+                    if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                      mobileMenu.classList.add('hidden');
+                      mobileMenuButton.setAttribute('aria-label', 'Open mobile menu');
+                      mobileMenuButton.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+                    }
+                  });
+                }
+              });
+            `,
+          }}
+        />
         <header className="bg-white shadow-lg border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 space-y-4 sm:space-y-0">
+            <div className="flex justify-between items-center py-4 sm:py-6">
               <div className="flex items-center">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center mr-3 sm:mr-4">
                   <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,14 +153,42 @@ export default function RootLayout({
                   </p>
                 </div>
               </div>
-              <nav className="flex flex-wrap gap-1 sm:gap-0 sm:space-x-1 w-full sm:w-auto">
-                <a href="/" className="px-3 py-2 text-sm sm:text-base text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
+              
+              {/* Desktop Navigation */}
+              <nav className="hidden md:flex space-x-1">
+                <a href="/" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
                   Today
                 </a>
-                <a href="/answers" className="px-3 py-2 text-sm sm:text-base text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
+                <a href="/answers" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
                   All Answers
                 </a>
-                <a href="/archive" className="px-3 py-2 text-sm sm:text-base text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
+                <a href="/archive" className="px-4 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
+                  Archive
+                </a>
+              </nav>
+
+              {/* Mobile Menu Button */}
+              <button 
+                id="mobile-menu-button"
+                className="md:hidden p-2 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                aria-label="Open mobile menu"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Mobile Navigation Menu */}
+            <div id="mobile-menu" className="hidden md:hidden border-t border-gray-200 pt-4 pb-4">
+              <nav className="flex flex-col space-y-2">
+                <a href="/" className="px-4 py-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
+                  Today
+                </a>
+                <a href="/answers" className="px-4 py-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
+                  All Answers
+                </a>
+                <a href="/archive" className="px-4 py-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors">
                   Archive
                 </a>
               </nav>
