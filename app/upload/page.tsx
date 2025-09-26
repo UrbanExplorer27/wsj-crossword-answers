@@ -21,7 +21,9 @@ export default function UploadPage() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch('/api/check-auth');
+        const response = await fetch('/api/check-auth', {
+          credentials: 'include',
+        });
         if (response.ok) {
           setIsAuthenticated(true);
         }
@@ -45,6 +47,7 @@ export default function UploadPage() {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({ password }),
       });
 
@@ -93,6 +96,7 @@ export default function UploadPage() {
         formData.append('date', selectedDate);
         response = await fetch('/api/upload-crossword', {
           method: 'POST',
+          credentials: 'include',
           body: formData,
         });
       } else if (uploadType === 'image') {
@@ -101,6 +105,7 @@ export default function UploadPage() {
         formData.append('date', selectedDate);
         response = await fetch('/api/upload-image', {
           method: 'POST',
+          credentials: 'include',
           body: formData,
         });
       } else if (uploadType === 'solved') {
@@ -109,6 +114,7 @@ export default function UploadPage() {
         formData.append('date', selectedDate);
         response = await fetch('/api/upload-solved', {
           method: 'POST',
+          credentials: 'include',
           body: formData,
         });
       } else if (uploadType === 'text') {
@@ -117,6 +123,7 @@ export default function UploadPage() {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include',
           body: JSON.stringify({ text, date: selectedDate }),
         });
       } else { // uploadType === 'answers'
@@ -125,6 +132,7 @@ export default function UploadPage() {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include',
           body: JSON.stringify({ text, date: selectedDate }),
         });
       }

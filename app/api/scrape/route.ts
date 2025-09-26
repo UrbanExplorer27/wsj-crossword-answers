@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { takeScreenshot, extractAnswersWithOpenAI, saveAnswers } from '@/scripts/scraper'
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,23 +10,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    console.log('🚀 Starting manual scrape via API...')
-    
-    // Take screenshot
-    const screenshotPath = await takeScreenshot()
-    
-    // Extract answers
-    const answers = await extractAnswersWithOpenAI(screenshotPath)
-    
-    // Save answers
-    await saveAnswers(answers)
-    
     return NextResponse.json({
-      success: true,
-      message: 'Scraping completed successfully',
-      answersCount: answers.length,
-      screenshotPath,
-      answers: answers.slice(0, 5) // Return first 5 answers as preview
+      success: false,
+      message: 'Scraping functionality has been disabled',
+      error: 'Playwright dependency was removed. Scraping is no longer available.'
     })
     
   } catch (error) {
